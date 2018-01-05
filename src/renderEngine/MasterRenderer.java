@@ -19,6 +19,10 @@ import normalMappingRenderer.NormalMappingRenderer;
 import shaders.StaticShader;
 import shaders.TerrainShader;
 import shadows.ShadowMapMasterRenderer;
+import shinyEntities.ShinyEntity;
+import shinyEntities.ShinyRenderer;
+import shinyEntities.ShinyShader;
+import skybox.Skybox;
 import skybox.SkyboxRenderer;
 import terrains.Terrain;
 
@@ -36,7 +40,8 @@ public class MasterRenderer {
 
 	private StaticShader shader = new StaticShader();
 	private EntityRenderer renderer;
-
+	private ShinyRenderer shinyRenderer;
+	private ShinyShader shinyShader = new ShinyShader();
 	private TerrainRenderer terrainRenderer;
 	private TerrainShader terrainShader = new TerrainShader();
 	
@@ -48,6 +53,7 @@ public class MasterRenderer {
 	private Map<TexturedModel, List<Entity>> entities = new HashMap<TexturedModel, List<Entity>>();
 	private Map<TexturedModel, List<Entity>> normalMapEntities = new HashMap<TexturedModel, List<Entity>>();
 	private List<Terrain> terrains = new ArrayList<Terrain>();
+	private List<ShinyEntity> shinyEntities = new ArrayList<ShinyEntity>();
 
 	public MasterRenderer(Loader loader, Camera camera) {
 		enableCulling();
@@ -57,6 +63,7 @@ public class MasterRenderer {
 		skyboxRenderer = new SkyboxRenderer(loader, projectionMatrix);
 		normalMapRenderer = new NormalMappingRenderer(projectionMatrix);
 		shadowMapRenderer = new ShadowMapMasterRenderer(camera);
+		shinyRenderer = new ShinyRenderer(projectionMatrix, new Skybox(loader));
 	}
 
 	public Matrix4f getProjectionMatrix() {
@@ -64,7 +71,7 @@ public class MasterRenderer {
 	}
 
 	public void renderScene(List<Entity> entities, List<Entity> normalEntities, List<Terrain> terrains, List<Light> lights,
-			Camera camera, Vector4f clipPlane) {
+			Camera camera, Vector4f clipPlane, List<ShinyEntity> shinyEntities) {
 		for (Terrain terrain : terrains) {
 			processTerrain(terrain);
 		}
@@ -73,6 +80,9 @@ public class MasterRenderer {
 		}
 		for(Entity entity : normalEntities){
 			processNormalMapEntity(entity);
+		}
+		for(ShinyEntity entity : shinyEntities){
+			processShinyEntity(entity);
 		}
 		render(lights, camera, clipPlane);
 	}
@@ -94,10 +104,15 @@ public class MasterRenderer {
 		terrainShader.loadViewMatrix(camera);
 		terrainRenderer.render(terrains, shadowMapRenderer.getToShadowMapSpaceMatrix());
 		terrainShader.stop();
+		//shinyShader.start();
+		shinyShader.loadViewMatrix(camera);
+		shinyRenderer.render(shinyEntities, camera);
+		//shinyShader.stop();
 		skyboxRenderer.render(camera, RED, GREEN, BLUE);
 		terrains.clear();
 		entities.clear();
 		normalMapEntities.clear();
+		shinyEntities.clear();
 	}
 
 	public static void enableCulling() {
@@ -111,6 +126,9 @@ public class MasterRenderer {
 
 	public void processTerrain(Terrain terrain) {
 		terrains.add(terrain);
+	}
+	public void processShinyEntity(ShinyEntity entity) {
+		shinyEntities.add(entity);
 	}
 
 	public void processEntity(Entity entity) {
@@ -154,6 +172,7 @@ public class MasterRenderer {
 		terrainShader.cleanUp();
 		normalMapRenderer.cleanUp();
 		shadowMapRenderer.cleanUp();
+		shinyRenderer.cleanUp();
 	}
 
 	public void prepare() {
