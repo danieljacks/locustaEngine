@@ -9,6 +9,7 @@ import org.lwjgl.util.vector.Matrix4f;
 import entities.Camera;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
+import toolbox.ICamera;
 
 public class SkyboxRenderer {
 	
@@ -25,9 +26,9 @@ public class SkyboxRenderer {
 		shader.stop();
 	}
 	
-	public void render(Camera camera, float r, float g, float b){
+	public void render(ICamera iCamera, float r, float g, float b){
 		shader.start();
-		shader.loadViewMatrix(camera);
+		shader.loadViewMatrix(iCamera);
 		shader.loadFogColour(r, g, b);
 		GL30.glBindVertexArray(skybox.getCube().getVaoID());
 		GL20.glEnableVertexAttribArray(0);

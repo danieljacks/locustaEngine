@@ -17,6 +17,7 @@ import models.RawModel;
 import models.TexturedModel;
 import renderEngine.MasterRenderer;
 import textures.ModelTexture;
+import toolbox.ICamera;
 import toolbox.Maths;
 
 public class NormalMappingRenderer {
@@ -31,7 +32,7 @@ public class NormalMappingRenderer {
 		shader.stop();
 	}
 
-	public void render(Map<TexturedModel, List<Entity>> entities, Vector4f clipPlane, List<Light> lights, Camera camera) {
+	public void render(Map<TexturedModel, List<Entity>> entities, Vector4f clipPlane, List<Light> lights, ICamera camera) {
 		shader.start();
 		prepare(clipPlane, lights, camera);
 		for (TexturedModel model : entities.keySet()) {
@@ -90,7 +91,7 @@ public class NormalMappingRenderer {
 		shader.loadOffset(entity.getTextureXOffset(), entity.getTextureYOffset());
 	}
 
-	private void prepare(Vector4f clipPlane, List<Light> lights, Camera camera) {
+	private void prepare(Vector4f clipPlane, List<Light> lights, ICamera camera) {
 		shader.loadClipPlane(clipPlane);
 		//need to be public variables in MasterRenderer
 		shader.loadSkyColour(MasterRenderer.RED, MasterRenderer.GREEN, MasterRenderer.BLUE);

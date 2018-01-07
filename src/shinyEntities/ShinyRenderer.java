@@ -14,6 +14,7 @@ import entities.Camera;
 import models.RawModel;
 import models.TexturedModel;
 import skybox.Skybox;
+import toolbox.ICamera;
 import toolbox.Maths;
 
 public class ShinyRenderer {
@@ -30,9 +31,9 @@ public class ShinyRenderer {
 		shader.stop();
 	}
 
-	public void render(List<ShinyEntity> entities, Camera camera) {
+	public void render(List<ShinyEntity> entities, ICamera iCamera) {
 		shader.start();
-		shader.loadViewMatrix(camera);
+		shader.loadViewMatrix(iCamera);
 		bindEnvironmentMap();
 		for (ShinyEntity entity : entities) {
 			TexturedModel model = entity.getModel();

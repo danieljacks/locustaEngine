@@ -2,6 +2,7 @@ package shinyEntities;
 
 import org.lwjgl.util.vector.Matrix4f;
 
+import toolbox.ICamera;
 import toolbox.Maths;
 
 import entities.Camera;
@@ -50,10 +51,10 @@ public class ShinyShader extends ShaderProgram{
 		super.loadMatrix(location_transformationMatrix, matrix);
 	}
 	
-	public void loadViewMatrix(Camera camera){
-		Matrix4f viewMatrix = Maths.createViewMatrix(camera);
+	public void loadViewMatrix(ICamera iCamera){
+		Matrix4f viewMatrix = Maths.createViewMatrix(iCamera);
 		super.loadMatrix(location_viewMatrix, viewMatrix);
-		super.loadVector(location_cameraPosition, camera.getPosition());
+		super.loadVector(location_cameraPosition, iCamera.getPosition());
 	}
 	
 	public void loadProjectionMatrix(Matrix4f projection){
