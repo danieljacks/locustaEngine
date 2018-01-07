@@ -7,6 +7,7 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
+import toolbox.ICamera;
 import toolbox.Maths;
 import entities.Camera;
 import entities.Light;
@@ -124,7 +125,7 @@ public class StaticShader extends ShaderProgram{
 		}
 	}
 	
-	public void loadViewMatrix(Camera camera){
+	public void loadViewMatrix(ICamera camera){
 		Matrix4f viewMatrix = Maths.createViewMatrix(camera);
 		super.loadMatrix(location_viewMatrix, viewMatrix);
 	}

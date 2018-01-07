@@ -1,6 +1,5 @@
 package game;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -17,6 +16,7 @@ import entities.Camera;
 import entities.Entity;
 import entities.Light;
 import entities.Player;
+import entities.Sky;
 import fontMeshCreator.FontType;
 import fontMeshCreator.GUIText;
 import fontRendering.TextMaster;
@@ -35,10 +35,14 @@ import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
 import renderEngine.OBJLoader;
+import scene.Scene;
+import shinyEntities.ShinyEntity;
+import skybox.Skybox;
 import terrains.Terrain;
 import textures.ModelTexture;
 import textures.TerrainTexture;
 import textures.TerrainTexturePack;
+import textures.TextureUtils;
 import toolbox.MousePicker;
 import water.WaterFrameBuffers;
 import water.WaterRenderer;
@@ -53,7 +57,19 @@ public class MainGameLoop {
 
 		DisplayManager.createDisplay();
 		Loader loader = new Loader();
+		
+		Scene scene = new Scene();
 		RawModel bunnyModel = OBJLoader.loadObjModel("person", loader);
+		RawModel teaModel = OBJLoader.loadObjModel("tea", loader);
+		TexturedModel teapot = new TexturedModel(teaModel,
+				new ModelTexture(loader.loadTexture("tea")));
+		RawModel metaModel = OBJLoader.loadObjModel("meta", loader);
+		TexturedModel meta = new TexturedModel(metaModel,
+				new ModelTexture(loader.loadTexture("meta")));
+		RawModel dragonModel = OBJLoader.loadObjModel("dragon", loader);
+		TexturedModel dragon = new TexturedModel(dragonModel,
+				new ModelTexture(loader.loadTexture("dragon")));
+		
 		TexturedModel stanfordBunny = new TexturedModel(bunnyModel,
 				new ModelTexture(loader.loadTexture("playerTexture")));
 		Player player = new Player(stanfordBunny, new Vector3f(75, 5, -75), 0, 100, 0, 0.6f);
@@ -181,11 +197,19 @@ public class MainGameLoop {
 			}
 		}
 		entities.add(new Entity(rocks, new Vector3f(75, 4.6f, -75), 0, 0, 0, 75));
+		
+		// *******************Shiny entities***************
+		
+		List<ShinyEntity> shinies = new ArrayList<ShinyEntity>();
+		shinies.add(new ShinyEntity(meta, new Vector3f(75, 10, -65), 0,0,0, 0.5f,128));
+		shinies.add(new ShinyEntity(teapot, new Vector3f(65, 10, -65), 0,0,0, 0.34f,128));
+		shinies.add(new ShinyEntity(dragon, new Vector3f(85, 10, -65), 0,0,0, 0.3f,128));
+		
 
 		// *******************OTHER SETUP***************
 
 		List<Light> lights = new ArrayList<Light>();
-		Light sun = new Light(new Vector3f(100000, 100000, -20000), new Vector3f(1.3f, 1.3f, 1.3f));
+		Light sun = new Light(new Vector3f(100000, 100000, -20000), new Vector3f(1.0f, 1.0f, 1.0f));
 		lights.add(sun);
 		entities.add(player);
 		List<GuiTexture> guiTextures = new ArrayList<GuiTexture>();
@@ -233,6 +257,22 @@ public class MainGameLoop {
 		Fbo outputFbo = new Fbo(Display.getWidth(), Display.getHeight(), Fbo.DEPTH_TEXTURE);
 		Fbo outputFbo2 = new Fbo(Display.getWidth(), Display.getHeight(), Fbo.DEPTH_TEXTURE);
 		PostProcessing.init(loader);
+		
+		
+		Sky sky = new Sky();
+		sky.setColour(new Vector3f(0.83f, 0.9f, 0.92f));
+		sky.setSkybox(new Skybox(loader));
+		scene.setCamera(camera);
+		scene.setEntities(entities);
+		scene.setNormalMapEntities(normalMapEntities);
+		scene.setShinyEntities(shinies);
+		scene.setSky(sky);
+		scene.setTerrains(terrains);
+		scene.setWaterTiles(waters);
+		scene.setLights(lights);
+		//environmap for shinies
+		
+		
 
 		// ****************Game Loop Below*********************
 
@@ -254,8 +294,8 @@ public class MainGameLoop {
 			entity2.increaseRotation(0, 1, 0);
 			entity3.increaseRotation(0, 1, 0);
 			List<Entity> shadowObjects = new ArrayList<>();
-			shadowObjects.addAll(entities);
-			shadowObjects.addAll(normalMapEntities);
+			shadowObjects.addAll(scene.getEntities());
+			shadowObjects.addAll(scene.getNormalMapEntities());
 			renderer.renderShadowMap(shadowObjects, sun);
 			GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 
@@ -264,21 +304,19 @@ public class MainGameLoop {
 			float distance = 2 * (camera.getPosition().y - water.getHeight());
 			camera.getPosition().y -= distance;
 			camera.invertPitch();
-			renderer.renderScene(entities, normalMapEntities, terrains, lights, camera,
-					new Vector4f(0, 1, 0, -water.getHeight() + 1));
+			renderer.renderScene(scene, new Vector4f(0, 1, 0, -water.getHeight() + 1));
 			camera.getPosition().y += distance;
 			camera.invertPitch();
 
 			// render refraction texture
 			buffers.bindRefractionFrameBuffer();
-			renderer.renderScene(entities, normalMapEntities, terrains, lights, camera,
-					new Vector4f(0, -1, 0, water.getHeight()));
+			renderer.renderScene(scene, new Vector4f(0, -1, 0, water.getHeight()));
 
 			// render to screen
 			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 			buffers.unbindCurrentFrameBuffer();
 			multisampleFbo.bindFrameBuffer();
-			renderer.renderScene(entities, normalMapEntities, terrains, lights, camera, new Vector4f(0, -1, 0, 100000));
+			renderer.renderScene(scene, new Vector4f(0, -1, 0, 100000));
 			waterRenderer.render(waters, camera, sun);
 			ParticleMaster.renderParicles(camera);
 			multisampleFbo.unbindFrameBuffer();
@@ -288,6 +326,12 @@ public class MainGameLoop {
 			PostProcessing.doPostProcessing(outputFbo.getColourTexture(), outputFbo2.getColourTexture());
 			guiRenderer.render(guiTextures);
 			TextMaster.render();
+			
+			//generate scenebox for shiny entities
+			for(ShinyEntity shiny : shinies){
+				renderer.renderEnvironmentMap(scene, shiny);
+			}
+			
 			DisplayManager.updateDisplay();
 		}
 
@@ -306,5 +350,9 @@ public class MainGameLoop {
 		DisplayManager.closeDisplay();
 
 	}
-
+//	private static TexturedModel loadModel(String fileName, Loader loader){
+//        RawModel model = OBJFileLoader.loadOBJ(fileName, loader);
+//        ModelTexture texture = new ModelTexture(loader.loadTexture(fileName));
+//        return new TexturedModel(model, texture);
+//    }
 }

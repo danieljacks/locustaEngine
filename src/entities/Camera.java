@@ -1,10 +1,12 @@
 package entities;
 
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
-public class Camera {
+import toolbox.ICamera;
+
+public class Camera implements ICamera{
 	
 	private float distanceFromPlayer = 35;
 	private float angleAroundPlayer = 0;
@@ -94,8 +96,28 @@ public class Camera {
 			angleAroundPlayer -= angleChange;
 		}
 	}
-	
-	
-	
 
+	@Override
+	public Matrix4f getViewMatrix() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void reflect(float height) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Matrix4f getProjectionMatrix() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Matrix4f getProjectionViewMatrix() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
