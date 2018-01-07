@@ -42,6 +42,7 @@ import terrains.Terrain;
 import textures.ModelTexture;
 import textures.TerrainTexture;
 import textures.TerrainTexturePack;
+import textures.TextureUtils;
 import toolbox.MousePicker;
 import water.WaterFrameBuffers;
 import water.WaterRenderer;
@@ -203,11 +204,12 @@ public class MainGameLoop {
 		shinies.add(new ShinyEntity(meta, new Vector3f(75, 10, -65), 0,0,0, 0.5f,128));
 		shinies.add(new ShinyEntity(teapot, new Vector3f(65, 10, -65), 0,0,0, 0.34f,128));
 		shinies.add(new ShinyEntity(dragon, new Vector3f(85, 10, -65), 0,0,0, 0.3f,128));
+		
 
 		// *******************OTHER SETUP***************
 
 		List<Light> lights = new ArrayList<Light>();
-		Light sun = new Light(new Vector3f(100000, 100000, -20000), new Vector3f(0.5f, 0.5f, 0.5f));
+		Light sun = new Light(new Vector3f(100000, 100000, -20000), new Vector3f(1.0f, 1.0f, 1.0f));
 		lights.add(sun);
 		entities.add(player);
 		List<GuiTexture> guiTextures = new ArrayList<GuiTexture>();
@@ -268,6 +270,8 @@ public class MainGameLoop {
 		scene.setTerrains(terrains);
 		scene.setWaterTiles(waters);
 		scene.setLights(lights);
+		//environmap for shinies
+		
 		
 
 		// ****************Game Loop Below*********************
@@ -322,6 +326,12 @@ public class MainGameLoop {
 			PostProcessing.doPostProcessing(outputFbo.getColourTexture(), outputFbo2.getColourTexture());
 			guiRenderer.render(guiTextures);
 			TextMaster.render();
+			
+			//generate scenebox for shiny entities
+			for(ShinyEntity shiny : shinies){
+				renderer.renderEnvironmentMap(scene, shiny);
+			}
+			
 			DisplayManager.updateDisplay();
 		}
 

@@ -20,10 +20,10 @@ import toolbox.Maths;
 public class ShinyRenderer {
 
 	private ShinyShader shader;
-	private Skybox skybox;
+	//private Skybox skybox;
 
 	public ShinyRenderer(Matrix4f projectionMatrix, Skybox skybox) {
-		this.skybox = skybox;
+		//this.skybox = skybox;
 		shader = new ShinyShader();
 		shader.start();
 		shader.loadProjectionMatrix(projectionMatrix);
@@ -34,8 +34,9 @@ public class ShinyRenderer {
 	public void render(List<ShinyEntity> entities, ICamera iCamera) {
 		shader.start();
 		shader.loadViewMatrix(iCamera);
-		bindEnvironmentMap();
+		
 		for (ShinyEntity entity : entities) {
+			bindEnvironmentMap(entity);
 			TexturedModel model = entity.getModel();
 			bindModelVao(model);
 			loadModelMatrix(entity);
@@ -50,9 +51,9 @@ public class ShinyRenderer {
 		shader.cleanUp();
 	}
 	
-	private void bindEnvironmentMap(){
+	private void bindEnvironmentMap(ShinyEntity entity){
 		GL13.glActiveTexture(GL13.GL_TEXTURE1);
-		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, skybox.getTexture());
+		GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, entity.getSceneBox().getID());
 	}
 
 	private void bindModelVao(TexturedModel model) {

@@ -9,21 +9,25 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 import entities.Camera;
 import entities.Entity;
 import entities.Light;
+import environmentMapRenderer.EnviroMapRenderer;
 import models.TexturedModel;
 import normalMappingRenderer.NormalMappingRenderer;
 import scene.Scene;
 import shaders.StaticShader;
 import shaders.TerrainShader;
 import shadows.ShadowMapMasterRenderer;
+import shinyEntities.ShinyEntity;
 import shinyEntities.ShinyRenderer;
 import shinyEntities.ShinyShader;
 import skybox.Skybox;
 import skybox.SkyboxRenderer;
+import textures.ModelTexture;
 import toolbox.ICamera;
 
 public class MasterRenderer {
@@ -217,6 +221,10 @@ public class MasterRenderer {
 		projectionMatrix.m23 = -1;
 		projectionMatrix.m32 = -((2 * NEAR_PLANE * FAR_PLANE) / frustum_length);
 		projectionMatrix.m33 = 0;
+	}
+	
+	public void renderEnvironmentMap(Scene scene, ShinyEntity entity){
+		EnviroMapRenderer.renderEnvironmentMap(scene, entity, this);
 	}
 
 }

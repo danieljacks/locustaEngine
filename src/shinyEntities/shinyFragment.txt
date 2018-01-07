@@ -21,6 +21,6 @@ void main(void){
 	vec4 reflectedColour = texture(enviroMap, reflectedVector);
 	vec4 refractedColour = texture(enviroMap, refractedVector);
 	vec4 enviroColour = mix(reflectedColour, refractedColour, 1.0);
-	out_Colour = mix(out_Colour, enviroColour, 0.5);
+	out_Colour = mix(out_Colour, enviroColour, 1.0);
 
 }
