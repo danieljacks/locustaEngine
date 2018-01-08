@@ -22,6 +22,8 @@ import fontMeshCreator.GUIText;
 import fontRendering.TextMaster;
 import guis.GuiRenderer;
 import guis.GuiTexture;
+import lensFlare.FlareManager;
+import lensFlare.FlareTexture;
 import models.RawModel;
 import models.TexturedModel;
 import normalMappingObjConverter.NormalMappedObjLoader;
@@ -43,7 +45,6 @@ import terrains.Terrain;
 import textures.ModelTexture;
 import textures.TerrainTexture;
 import textures.TerrainTexturePack;
-import textures.TextureUtils;
 import toolbox.MousePicker;
 import water.WaterFrameBuffers;
 import water.WaterRenderer;
@@ -256,16 +257,27 @@ public class MainGameLoop {
 		particleSystem_smoke.setSpeedError(0.4f);
 		particleSystem_smoke.setScaleError(0.8f);
 		
+		//POSTPROCESSING
 		Fbo multisampleFbo = new Fbo(Display.getWidth(), Display.getHeight());
 		Fbo outputFbo = new Fbo(Display.getWidth(), Display.getHeight(), Fbo.DEPTH_TEXTURE);
 		Fbo outputFbo2 = new Fbo(Display.getWidth(), Display.getHeight(), Fbo.DEPTH_TEXTURE);
 		PostProcessing.init(loader);
 		
-		
+		//SUNS
 		List<Sun> suns = new ArrayList<Sun>();
 		Sun mainSun = new Sun(new ModelTexture(loader.loadTexture("sun")), 10);
 		mainSun.setDirection(sun.getPosition());
 		suns.add(mainSun);
+		//LENS FLARES
+		ModelTexture [] flareTextures = new ModelTexture[9];
+		for(int i = 0 ; i<flareTextures.length ; i++){
+			flareTextures[i] = new ModelTexture(loader.loadTexture("tex"+(i+1)));
+		}
+		FlareManager lensFlare = new FlareManager(0.16f, new FlareTexture(flareTextures[5], 1f),
+				new FlareTexture(flareTextures[3], 0.46f), new FlareTexture(flareTextures[1], 0.2f), new FlareTexture(flareTextures[6], 0.1f), new FlareTexture(flareTextures[0], 0.04f),
+				new FlareTexture(flareTextures[2], 0.12f), new FlareTexture(flareTextures[8], 0.24f), new FlareTexture(flareTextures[4], 0.14f), new FlareTexture(flareTextures[0], 0.024f), new FlareTexture(flareTextures[7], 0.4f),
+				new FlareTexture(flareTextures[8], 0.2f), new FlareTexture(flareTextures[2], 0.14f), new FlareTexture(flareTextures[4], 0.6f), new FlareTexture(flareTextures[3], 0.8f),
+				new FlareTexture(flareTextures[7], 1.2f));
 		
 		Sky sky = new Sky();
 		sky.setColour(new Vector3f(0.83f, 0.9f, 0.92f));
@@ -279,8 +291,6 @@ public class MainGameLoop {
 		scene.setTerrains(terrains);
 		scene.setWaterTiles(waters);
 		scene.setLights(lights);
-		//environmap for shinies
-		
 		
 
 		// ****************Game Loop Below*********************
@@ -320,7 +330,7 @@ public class MainGameLoop {
 			// render refraction texture
 			buffers.bindRefractionFrameBuffer();
 			renderer.renderScene(scene, new Vector4f(0, -1, 0, water.getHeight()));
-
+			
 			// render to screen
 			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 			buffers.unbindCurrentFrameBuffer();
@@ -333,6 +343,8 @@ public class MainGameLoop {
 			multisampleFbo.resolveToFbo(GL30.GL_COLOR_ATTACHMENT1,outputFbo2);
 			//multisampleFbo.resolveToScreen();
 			PostProcessing.doPostProcessing(outputFbo.getColourTexture(), outputFbo2.getColourTexture());
+			//render lens flare
+			lensFlare.render(scene.getCamera(), mainSun.getWorldPosition(scene.getCamera().getPosition()));
 			guiRenderer.render(guiTextures);
 			TextMaster.render();
 			
@@ -356,6 +368,7 @@ public class MainGameLoop {
 		guiRenderer.cleanUp();
 		renderer.cleanUp();
 		loader.cleanUp();
+		lensFlare.cleanUp();
 		DisplayManager.closeDisplay();
 
 	}

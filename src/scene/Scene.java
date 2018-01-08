@@ -6,6 +6,7 @@ import java.util.List;
 import entities.Entity;
 import entities.Light;
 import entities.Sky;
+import lensFlare.FlareManager;
 import shinyEntities.ShinyEntity;
 import terrains.Terrain;
 import toolbox.ICamera;
@@ -21,6 +22,7 @@ public class Scene {
 	
 	private ICamera camera;
 	private Sky sky;
+	private FlareManager flare;
 	
 	public List<Entity> getEntities() {
 		return entities;
@@ -105,5 +107,11 @@ public class Scene {
 	}
 	public void removeLight(Light light){
 		lights.remove(light);
+	}
+	public FlareManager getFlare() {
+		return flare;
+	}
+	public void setFlare(FlareManager flare) {
+		this.flare = flare;
 	}
 }

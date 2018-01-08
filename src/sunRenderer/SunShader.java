@@ -10,6 +10,7 @@ public class SunShader extends ShaderProgram {
 	private static final String FRAGMENT_FILE = "/sunRenderer/sunFragment.glsl";
 	
 	private int location_mvpMatrix;
+	
 	private int location_sunTexture;
 
 	public SunShader() {

@@ -15,6 +15,7 @@ import entities.Camera;
 import entities.Entity;
 import entities.Light;
 import environmentMapRenderer.EnviroMapRenderer;
+import lensFlare.FlareManager;
 import models.TexturedModel;
 import normalMappingRenderer.NormalMappingRenderer;
 import scene.Scene;
