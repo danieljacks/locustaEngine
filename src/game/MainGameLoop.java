@@ -38,6 +38,7 @@ import renderEngine.OBJLoader;
 import scene.Scene;
 import shinyEntities.ShinyEntity;
 import skybox.Skybox;
+import sunRenderer.Sun;
 import terrains.Terrain;
 import textures.ModelTexture;
 import textures.TerrainTexture;
@@ -77,6 +78,8 @@ public class MainGameLoop {
 		MasterRenderer renderer = new MasterRenderer(loader, camera);
 		TextMaster.init(loader);
 		ParticleMaster.init(loader, renderer.getProjectionMatrix());
+		
+		
 
 		FontType font = new FontType(loader.loadFontTexture("candara"), "candara");
 		GUIText text = new GUIText("TEST", 3f, font, new Vector2f(0f, 0f), 1f, true);
@@ -201,15 +204,15 @@ public class MainGameLoop {
 		// *******************Shiny entities***************
 		
 		List<ShinyEntity> shinies = new ArrayList<ShinyEntity>();
-		shinies.add(new ShinyEntity(meta, new Vector3f(75, 10, -65), 0,0,0, 0.5f,128));
-		shinies.add(new ShinyEntity(teapot, new Vector3f(65, 10, -65), 0,0,0, 0.34f,128));
-		shinies.add(new ShinyEntity(dragon, new Vector3f(85, 10, -65), 0,0,0, 0.3f,128));
+		//shinies.add(new ShinyEntity(meta, new Vector3f(75, 10, -65), 0,0,0, 0.5f,128));
+		//shinies.add(new ShinyEntity(teapot, new Vector3f(65, 10, -65), 0,0,0, 0.34f,128));
+		//shinies.add(new ShinyEntity(dragon, new Vector3f(85, 10, -65), 0,0,0, 0.3f,128));
 		
 
 		// *******************OTHER SETUP***************
 
 		List<Light> lights = new ArrayList<Light>();
-		Light sun = new Light(new Vector3f(100000, 100000, -20000), new Vector3f(1.0f, 1.0f, 1.0f));
+		Light sun = new Light(new Vector3f(1000, 1000, 200), new Vector3f(1.0f, 1.0f, 1.0f));
 		lights.add(sun);
 		entities.add(player);
 		List<GuiTexture> guiTextures = new ArrayList<GuiTexture>();
@@ -259,9 +262,15 @@ public class MainGameLoop {
 		PostProcessing.init(loader);
 		
 		
+		List<Sun> suns = new ArrayList<Sun>();
+		Sun mainSun = new Sun(new ModelTexture(loader.loadTexture("sun")), 10);
+		mainSun.setDirection(sun.getPosition());
+		suns.add(mainSun);
+		
 		Sky sky = new Sky();
 		sky.setColour(new Vector3f(0.83f, 0.9f, 0.92f));
 		sky.setSkybox(new Skybox(loader));
+		sky.setSuns(suns);
 		scene.setCamera(camera);
 		scene.setEntities(entities);
 		scene.setNormalMapEntities(normalMapEntities);

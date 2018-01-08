@@ -9,7 +9,6 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.util.vector.Matrix4f;
-import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 import entities.Camera;
@@ -27,7 +26,7 @@ import shinyEntities.ShinyRenderer;
 import shinyEntities.ShinyShader;
 import skybox.Skybox;
 import skybox.SkyboxRenderer;
-import textures.ModelTexture;
+import sunRenderer.SunRenderer;
 import toolbox.ICamera;
 
 public class MasterRenderer {
@@ -55,6 +54,7 @@ public class MasterRenderer {
 	private NormalMappingRenderer normalMapRenderer;
 	private SkyboxRenderer skyboxRenderer;
 	private ShadowMapMasterRenderer shadowMapRenderer;
+	private SunRenderer sunRenderer;
 
 	public MasterRenderer(Loader loader, Camera camera) {
 		enableCulling();
@@ -65,6 +65,7 @@ public class MasterRenderer {
 		normalMapRenderer = new NormalMappingRenderer(projectionMatrix);
 		shadowMapRenderer = new ShadowMapMasterRenderer(camera);
 		shinyRenderer = new ShinyRenderer(projectionMatrix, new Skybox(loader));
+		sunRenderer = new SunRenderer(loader);
 	}
 
 	public Matrix4f getProjectionMatrix() {
@@ -135,6 +136,7 @@ public class MasterRenderer {
 		shinyShader.loadViewMatrix(scene.getCamera());
 		shinyRenderer.render(scene.getShinyEntities(), scene.getCamera());
 		skyboxRenderer.render(scene.getCamera(), RED, GREEN, BLUE);
+		sunRenderer.render(scene.getSky().getSuns(),scene.getCamera());
 		// terrains.clear();
 		entityBatch.clear();
 		normalMapEntityBatch.clear();
