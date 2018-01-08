@@ -1,8 +1,6 @@
 package shinyEntities;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -10,7 +8,6 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
 
-import entities.Camera;
 import models.RawModel;
 import models.TexturedModel;
 import skybox.Skybox;
@@ -20,10 +17,8 @@ import toolbox.Maths;
 public class ShinyRenderer {
 
 	private ShinyShader shader;
-	//private Skybox skybox;
 
 	public ShinyRenderer(Matrix4f projectionMatrix, Skybox skybox) {
-		//this.skybox = skybox;
 		shader = new ShinyShader();
 		shader.start();
 		shader.loadProjectionMatrix(projectionMatrix);
