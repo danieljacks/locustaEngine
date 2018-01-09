@@ -110,6 +110,7 @@ public class MasterRenderer {
 		shinyShader.loadViewMatrix(cubeMapCamera);
 		shinyRenderer.render(scene.getShinyEntities(), cubeMapCamera);
 		skyboxRenderer.render(cubeMapCamera, RED, GREEN, BLUE);
+		sunRenderer.render(scene.getSky().getSuns(),scene.getCamera());
 		// terrains.clear();
 		entityBatch.clear();
 		normalMapEntityBatch.clear();

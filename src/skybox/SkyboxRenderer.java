@@ -10,6 +10,7 @@ import entities.Camera;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import toolbox.ICamera;
+import toolbox.OpenGlUtils;
 
 public class SkyboxRenderer {
 	
@@ -28,6 +29,11 @@ public class SkyboxRenderer {
 	
 	public void render(ICamera iCamera, float r, float g, float b){
 		shader.start();
+		GL11.glDepthMask(false);
+		OpenGlUtils.disableBlending();
+		OpenGlUtils.enableDepthTesting(true);
+		OpenGlUtils.cullBackFaces(true);
+        OpenGlUtils.antialias(false);
 		shader.loadViewMatrix(iCamera);
 		shader.loadFogColour(r, g, b);
 		GL30.glBindVertexArray(skybox.getCube().getVaoID());
@@ -36,6 +42,7 @@ public class SkyboxRenderer {
 		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, skybox.getCube().getVertexCount());
 		GL20.glDisableVertexAttribArray(0);
 		GL30.glBindVertexArray(0);
+		GL11.glDepthMask(true);
 		shader.stop();
 	}
 	

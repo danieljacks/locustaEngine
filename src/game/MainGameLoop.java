@@ -213,7 +213,7 @@ public class MainGameLoop {
 		// *******************OTHER SETUP***************
 
 		List<Light> lights = new ArrayList<Light>();
-		Light sun = new Light(new Vector3f(1000, 1000, 200), new Vector3f(1.0f, 1.0f, 1.0f));
+		Light sun = new Light(new Vector3f(100, 100, 20), new Vector3f(1.0f, 1.0f, 1.0f));
 		lights.add(sun);
 		entities.add(player);
 		List<GuiTexture> guiTextures = new ArrayList<GuiTexture>();
@@ -336,6 +336,7 @@ public class MainGameLoop {
 			buffers.unbindCurrentFrameBuffer();
 			multisampleFbo.bindFrameBuffer();
 			renderer.renderScene(scene, new Vector4f(0, -1, 0, 100000));
+			lensFlare.render(scene.getCamera(), mainSun.getWorldPosition(scene.getCamera().getPosition()));
 			waterRenderer.render(waters, camera, sun);
 			ParticleMaster.renderParicles(camera);
 			multisampleFbo.unbindFrameBuffer();
@@ -343,8 +344,8 @@ public class MainGameLoop {
 			multisampleFbo.resolveToFbo(GL30.GL_COLOR_ATTACHMENT1,outputFbo2);
 			//multisampleFbo.resolveToScreen();
 			PostProcessing.doPostProcessing(outputFbo.getColourTexture(), outputFbo2.getColourTexture());
-			//render lens flare
-			lensFlare.render(scene.getCamera(), mainSun.getWorldPosition(scene.getCamera().getPosition()));
+			
+			
 			guiRenderer.render(guiTextures);
 			TextMaster.render();
 			
