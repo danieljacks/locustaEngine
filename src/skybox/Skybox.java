@@ -4,7 +4,7 @@ import models.RawModel;
 import renderEngine.Loader;
 
 public class Skybox {
-private static final float SIZE = 700f;
+private static final float SIZE = 500f;
 	
 	private static final float[] VERTICES = {        
 	    -SIZE,  SIZE, -SIZE,

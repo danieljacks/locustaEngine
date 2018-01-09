@@ -1,10 +1,9 @@
 package lensFlare;
 
+import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector4f;
+
 import shaders.ShaderProgram;
-import shaders.UniformFloat;
-import shaders.UniformSampler;
-import shaders.UniformVec4;
-import utils.MyFile;
 
 /**
  * Sets up the shader program for the rendering the lens flare. It gets the
@@ -16,24 +15,40 @@ import utils.MyFile;
  */
 public class FlareShader extends ShaderProgram {
 
-	private static final MyFile VERTEX_SHADER = new MyFile("lensFlare", "flareVertex.glsl");
-	private static final MyFile FRAGMENT_SHADER = new MyFile("lensFlare", "flareFragment.glsl");
+	private static final String VERTEX_FILE = "/lensFlare/flareVertex.glsl";
+	private static final String FRAGMENT_FILE = "/lensFlare/flareFragment.glsl";
 
-	protected UniformFloat brightness = new UniformFloat("brightness");
-	protected UniformVec4 transform = new UniformVec4("transform");
-
-	private UniformSampler flareTexture = new UniformSampler("flareTexture");
+	private int location_brightness;
+	private int location_transform;
+	
+	private int location_flareTexture;
 
 	public FlareShader() {
-		super(VERTEX_SHADER, FRAGMENT_SHADER, "in_position");
-		super.storeAllUniformLocations(brightness, flareTexture, transform);
-		connectTextureUnits();
+		super(VERTEX_FILE, FRAGMENT_FILE);
 	}
 
-	private void connectTextureUnits() {
-		super.start();
-		flareTexture.loadTexUnit(0);
-		super.stop();
+	@Override
+	protected void bindAttributes() {
+		super.bindAttribute(0, "in_position");
+
+	}
+	
+	@Override
+	protected void getAllUniformLocations() {
+		this.location_brightness = super.getUniformLocation("brightness");
+		this.location_transform = super.getUniformLocation("transform");
+	}
+	
+	protected void connectTextureUnits(){
+		super.loadInt(location_flareTexture, 0);
+	}
+	
+	public void loadBrightness(float brightness){
+		super.loadFloat(location_brightness, brightness);
+	}
+	
+	public void loadTransform(Vector4f transform){
+		super.loadVector(location_transform, transform);
 	}
 
 }

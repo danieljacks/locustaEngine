@@ -12,6 +12,7 @@ import org.lwjgl.util.vector.Vector3f;
 import models.RawModel;
 import renderEngine.Loader;
 import toolbox.ICamera;
+import toolbox.OpenGlUtils;
 
 public class SunRenderer {
 
@@ -44,10 +45,9 @@ public class SunRenderer {
 	}
 
 	private void prepare(Sun sun, ICamera camera) {
-		// OpenGlUtils.antialias(false);
+		OpenGlUtils.antialias(false);
 		GL11.glDepthMask(false);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		OpenGlUtils.enableAlphaBlending();
 		shader.start();
 		Matrix4f mvpMat = calculateMvpMatrix(sun, camera);
 		shader.loadMvpMatrix(mvpMat);

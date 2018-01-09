@@ -15,6 +15,7 @@ import entities.Camera;
 import entities.Entity;
 import entities.Light;
 import environmentMapRenderer.EnviroMapRenderer;
+import lensFlare.FlareManager;
 import models.TexturedModel;
 import normalMappingRenderer.NormalMappingRenderer;
 import scene.Scene;
@@ -109,6 +110,7 @@ public class MasterRenderer {
 		shinyShader.loadViewMatrix(cubeMapCamera);
 		shinyRenderer.render(scene.getShinyEntities(), cubeMapCamera);
 		skyboxRenderer.render(cubeMapCamera, RED, GREEN, BLUE);
+		sunRenderer.render(scene.getSky().getSuns(),scene.getCamera());
 		// terrains.clear();
 		entityBatch.clear();
 		normalMapEntityBatch.clear();
