@@ -66,7 +66,7 @@ public class ParticleSystem {
     }
  
     public void generateParticles(Vector3f systemCenter) {
-        float delta = DisplayManager.getFrameTimeSeconds();
+        float delta = DisplayManager.getFrameTime();
         float particlesToCreate = pps * delta;
         int count = (int) Math.floor(particlesToCreate);
         float partialParticle = particlesToCreate % 1;

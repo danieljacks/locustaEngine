@@ -52,13 +52,13 @@ public class Particle {
 	}
 
 	protected boolean update(Camera camera) {
-		velocity.y += Player.GRAVITY * gravityEffect * DisplayManager.getFrameTimeSeconds();
+		velocity.y += Player.GRAVITY * gravityEffect * DisplayManager.getFrameTime();
 		reusableChange.set(velocity);
-		reusableChange.scale(DisplayManager.getFrameTimeSeconds());
+		reusableChange.scale(DisplayManager.getFrameTime());
 		Vector3f.add(reusableChange, position, position);
 		distance = Vector3f.sub(camera.getPosition(), position, null).lengthSquared();
 		updateTextureCoordInfo();
-		elapsedTime += DisplayManager.getFrameTimeSeconds();
+		elapsedTime += DisplayManager.getFrameTime();
 		return elapsedTime < lifeLength;
 	}
 

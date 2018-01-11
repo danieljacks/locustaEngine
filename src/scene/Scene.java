@@ -3,7 +3,9 @@ package scene;
 import java.util.ArrayList;
 import java.util.List;
 
+import animationRenderer.AnimatedEntity;
 import entities.Entity;
+import entities.Fog;
 import entities.Light;
 import entities.Sky;
 import lensFlare.FlareManager;
@@ -19,10 +21,12 @@ public class Scene {
 	private List<ShinyEntity> shinyEntities = new ArrayList<ShinyEntity>();
 	private List<WaterTile> waterTiles = new ArrayList<WaterTile>();
 	private List<Light> lights = new ArrayList<Light>();
+	private List<AnimatedEntity> animatedEntities = new ArrayList<AnimatedEntity>();
 	
 	private ICamera camera;
 	private Sky sky;
 	private FlareManager flare;
+	private Fog fog;
 	
 	public List<Entity> getEntities() {
 		return entities;
@@ -113,5 +117,24 @@ public class Scene {
 	}
 	public void setFlare(FlareManager flare) {
 		this.flare = flare;
+	}
+	public Fog getFog() {
+		return fog;
+	}
+	public void setFog(Fog fog) {
+		this.fog = fog;
+	}
+	public List<AnimatedEntity> getAnimatedEntities() {
+		return animatedEntities;
+	}
+	public void setAnimatedEntities(List<AnimatedEntity> animatedEntities) {
+		this.animatedEntities = animatedEntities;
+	}
+	
+	public void addAnimatedEntity(AnimatedEntity entity){
+		animatedEntities.add(entity);
+	}
+	public void removeAnimatedEntity(AnimatedEntity entity){
+		animatedEntities.remove(entity);
 	}
 }

@@ -11,11 +11,11 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector4f;
 
+import animationRenderer.AnimatedModelRenderer;
 import entities.Camera;
 import entities.Entity;
 import entities.Light;
 import environmentMapRenderer.EnviroMapRenderer;
-import lensFlare.FlareManager;
 import models.TexturedModel;
 import normalMappingRenderer.NormalMappingRenderer;
 import scene.Scene;
@@ -56,6 +56,7 @@ public class MasterRenderer {
 	private SkyboxRenderer skyboxRenderer;
 	private ShadowMapMasterRenderer shadowMapRenderer;
 	private SunRenderer sunRenderer;
+	private AnimatedModelRenderer animatedRenderer;
 
 	public MasterRenderer(Loader loader, Camera camera) {
 		enableCulling();
@@ -67,6 +68,7 @@ public class MasterRenderer {
 		shadowMapRenderer = new ShadowMapMasterRenderer(camera);
 		shinyRenderer = new ShinyRenderer(projectionMatrix, new Skybox(loader));
 		sunRenderer = new SunRenderer(loader);
+		animatedRenderer = new AnimatedModelRenderer();
 	}
 
 	public Matrix4f getProjectionMatrix() {
@@ -139,6 +141,7 @@ public class MasterRenderer {
 		shinyRenderer.render(scene.getShinyEntities(), scene.getCamera());
 		skyboxRenderer.render(scene.getCamera(), RED, GREEN, BLUE);
 		sunRenderer.render(scene.getSky().getSuns(),scene.getCamera());
+		animatedRenderer.render(scene.getAnimatedEntities(), scene.getCamera(), scene.getSky().getSuns().get(0).getLightDirection(), scene.getFog(), scene.getSky());
 		// terrains.clear();
 		entityBatch.clear();
 		normalMapEntityBatch.clear();
@@ -180,7 +183,7 @@ public class MasterRenderer {
 		}
 	}
 
-	public void renderShadowMap(List<Entity> entityList, Light sun) {// TOTO:
+	public void renderShadowMap(List<Entity> entityList, Light sun) {// TODO:
 																		// all
 																		// entities
 																		// to
@@ -202,6 +205,8 @@ public class MasterRenderer {
 		normalMapRenderer.cleanUp();
 		shadowMapRenderer.cleanUp();
 		shinyRenderer.cleanUp();
+		sunRenderer.cleanUp();
+		animatedRenderer.cleanUp();
 	}
 
 	public void prepare() {
