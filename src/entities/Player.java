@@ -28,13 +28,13 @@ public class Player extends Entity {
 
 	public void move(Terrain terrain) {
 		checkInputs();
-		super.increaseRotation(0, currentTurnSpeed * DisplayManager.getFrameTimeSeconds(), 0);
-		float distance = currentSpeed * DisplayManager.getFrameTimeSeconds();
+		super.increaseRotation(0, currentTurnSpeed * DisplayManager.getFrameTime(), 0);
+		float distance = currentSpeed * DisplayManager.getFrameTime();
 		float dx = (float) (distance * Math.sin(Math.toRadians(super.getRotY())));
 		float dz = (float) (distance * Math.cos(Math.toRadians(super.getRotY())));
 		super.increasePosition(dx, 0, dz);
-		upwardsSpeed += GRAVITY * DisplayManager.getFrameTimeSeconds();
-		super.increasePosition(0, upwardsSpeed * DisplayManager.getFrameTimeSeconds(), 0);
+		upwardsSpeed += GRAVITY * DisplayManager.getFrameTime();
+		super.increasePosition(0, upwardsSpeed * DisplayManager.getFrameTime(), 0);
 		float terrainHeight = terrain.getHeightOfTerrain(getPosition().x, getPosition().z);
 		if (super.getPosition().y < terrainHeight) {
 			upwardsSpeed = 0;

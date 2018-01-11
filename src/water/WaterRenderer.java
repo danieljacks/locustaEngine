@@ -59,7 +59,7 @@ public class WaterRenderer {
 	private void prepareRender(Camera camera, Light sun){
 		shader.start();
 		shader.loadViewMatrix(camera);
-		moveFactor += WAVE_SPEED * DisplayManager.getFrameTimeSeconds();
+		moveFactor += WAVE_SPEED * DisplayManager.getFrameTime();
 		moveFactor %= 1;
 		shader.loadMoveFactor(moveFactor);
 		shader.loadLight(sun);

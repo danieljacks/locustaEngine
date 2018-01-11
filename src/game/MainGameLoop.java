@@ -12,8 +12,13 @@ import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
+import animation.AnimatedModelLoader;
+import animation.Animation;
+import animation.AnimationLoader;
+import animationRenderer.AnimatedEntity;
 import entities.Camera;
 import entities.Entity;
+import entities.Fog;
 import entities.Light;
 import entities.Player;
 import entities.Sky;
@@ -46,6 +51,7 @@ import textures.ModelTexture;
 import textures.TerrainTexture;
 import textures.TerrainTexturePack;
 import toolbox.MousePicker;
+import toolbox.MyFile;
 import water.WaterFrameBuffers;
 import water.WaterRenderer;
 import water.WaterShader;
@@ -279,6 +285,14 @@ public class MainGameLoop {
 				new FlareTexture(flareTextures[8], 0.2f), new FlareTexture(flareTextures[2], 0.14f), new FlareTexture(flareTextures[4], 0.6f), new FlareTexture(flareTextures[3], 0.8f),
 				new FlareTexture(flareTextures[7], 1.2f));
 		
+		//ANIMATION TEST
+		AnimatedEntity guy = AnimatedModelLoader.loadEntity(new MyFile("res", "villager.dae"),
+				new MyFile("res", "villager.png"));
+		
+		Animation animation = AnimationLoader.loadAnimation(new MyFile("res", "villager.dae"));
+		guy.doAnimation(animation);
+		
+		Fog fog = new Fog(0.003f, 6.0f);
 		Sky sky = new Sky();
 		sky.setColour(new Vector3f(0.83f, 0.9f, 0.92f));
 		sky.setSkybox(new Skybox(loader));
@@ -291,6 +305,8 @@ public class MainGameLoop {
 		scene.setTerrains(terrains);
 		scene.setWaterTiles(waters);
 		scene.setLights(lights);
+		scene.addAnimatedEntity(guy);
+		scene.setFog(fog);
 		
 
 		// ****************Game Loop Below*********************
@@ -299,6 +315,7 @@ public class MainGameLoop {
 			player.move(terrain);
 			camera.move();
 			picker.update();
+			guy.update();
 
 			if (Keyboard.isKeyDown(Keyboard.KEY_Y)) {
 				Vector3f position = new Vector3f(player.getPosition());

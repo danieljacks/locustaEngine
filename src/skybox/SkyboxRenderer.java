@@ -47,7 +47,7 @@ public class SkyboxRenderer {
 	}
 	
 	private void bindTextures(){
-		time += DisplayManager.getFrameTimeSeconds() * 200;
+		time += DisplayManager.getFrameTime() * 200;
 		time %= 24000;
 		int texture1;
 		int texture2;
