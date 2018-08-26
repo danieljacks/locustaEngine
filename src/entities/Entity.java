@@ -10,6 +10,8 @@ public class Entity {
 	private Vector3f position;
 	private float rotX, rotY, rotZ;
 	private float scale;
+	private boolean castShadow = true;
+	private boolean important = true;
 	
 	private int textureIndex = 0;
 
@@ -102,6 +104,22 @@ public class Entity {
 
 	public void setScale(float scale) {
 		this.scale = scale;
+	}
+
+	public boolean isCastShadow() {
+		return castShadow;
+	}
+
+	public void setCastShadow(boolean castShadow) {
+		this.castShadow = castShadow;
+	}
+
+	public boolean isImportant() {
+		return important;
+	}
+
+	public void setImportant(boolean important) {
+		this.important = important;
 	}
 
 }

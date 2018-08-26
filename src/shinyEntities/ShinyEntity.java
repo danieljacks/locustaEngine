@@ -20,7 +20,7 @@ public class ShinyEntity extends Entity{
 		this.sceneBoxSize = sceneBoxSize;
 		this.setSceneBox(ModelTexture.newEmptyCubeMap(sceneBoxSize));
 		this.camera = new CubeMapCamera(position);
-		camera.getPosition().setY(camera.getPosition().getY()+1);
+		camera.getPosition().setY(camera.getPosition().getY());
 	}
 	
 	public ShinyEntity(TexturedModel model, Vector3f position, float rotX, float rotY, float rotZ,

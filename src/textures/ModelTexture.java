@@ -17,6 +17,7 @@ public class ModelTexture {
 	private boolean hasTransparency = false;
 	private boolean useFakeLighting = false;
 	private boolean hasSpecularMap = false;
+	private boolean hasNormalMap = false;
 	
 	private int numberOfRows = 1;
 	
@@ -53,6 +54,7 @@ public class ModelTexture {
 
 	public void setNormalMap(int normalMap) {
 		this.normalMap = normalMap;
+		this.hasNormalMap = true;
 	}
 
 	public void setNumberOfRows(int numberOfRows) {
@@ -102,4 +104,7 @@ public class ModelTexture {
 		return new ModelTexture(cubeMapId, GL13.GL_TEXTURE_CUBE_MAP, size);
 	}
 
+	public boolean isHasNormalMap() {
+		return hasNormalMap;
+	}
 }

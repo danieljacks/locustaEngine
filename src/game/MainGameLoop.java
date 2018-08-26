@@ -211,9 +211,10 @@ public class MainGameLoop {
 		// *******************Shiny entities***************
 		
 		List<ShinyEntity> shinies = new ArrayList<ShinyEntity>();
+		ShinyEntity shinyDragon = new ShinyEntity(teapot, new Vector3f(45, 10, 65), 0,0,0, 5f,128);
 		//shinies.add(new ShinyEntity(meta, new Vector3f(75, 10, -65), 0,0,0, 0.5f,128));
 		//shinies.add(new ShinyEntity(teapot, new Vector3f(65, 10, -65), 0,0,0, 0.34f,128));
-		//shinies.add(new ShinyEntity(dragon, new Vector3f(85, 10, -65), 0,0,0, 0.3f,128));
+		shinies.add(shinyDragon);
 		
 
 		// *******************OTHER SETUP***************
@@ -329,6 +330,7 @@ public class MainGameLoop {
 			entity.increaseRotation(0, 1, 0);
 			entity2.increaseRotation(0, 1, 0);
 			entity3.increaseRotation(0, 1, 0);
+			//shinyDragon.increaseRotation(0, 1, 0);
 			List<Entity> shadowObjects = new ArrayList<>();
 			shadowObjects.addAll(scene.getEntities());
 			shadowObjects.addAll(scene.getNormalMapEntities());
@@ -348,6 +350,11 @@ public class MainGameLoop {
 			buffers.bindRefractionFrameBuffer();
 			renderer.renderScene(scene, new Vector4f(0, -1, 0, water.getHeight()));
 			
+			//generate scenebox for shiny entities
+			for(ShinyEntity shiny : shinies){
+				renderer.renderEnvironmentMap(scene, shiny);
+			}
+			
 			// render to screen
 			GL11.glDisable(GL30.GL_CLIP_DISTANCE0);
 			buffers.unbindCurrentFrameBuffer();
@@ -366,10 +373,7 @@ public class MainGameLoop {
 			guiRenderer.render(guiTextures);
 			TextMaster.render();
 			
-			//generate scenebox for shiny entities
-			for(ShinyEntity shiny : shinies){
-				renderer.renderEnvironmentMap(scene, shiny);
-			}
+			
 			
 			DisplayManager.updateDisplay();
 		}
