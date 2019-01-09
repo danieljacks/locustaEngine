@@ -24,7 +24,7 @@ import renderEngine.MasterRenderer;
  */
 public class ShadowBox {
 
-	private static final float OFFSET = 15;
+	private static final float OFFSET = 150;
 	private static final Vector4f UP = new Vector4f(0, 1, 0, 0);
 	private static final Vector4f FORWARD = new Vector4f(0, 0, -1, 0);
 	private static final float SHADOW_DISTANCE = 150; //visible shadow range. higher decrases quality
@@ -53,7 +53,7 @@ public class ShadowBox {
 	protected ShadowBox(Matrix4f lightViewMatrix, Camera camera) {
 		this.lightViewMatrix = lightViewMatrix;
 		this.cam = camera;
-		calculateWidthsAndHeights(camera.getFov());
+		calculateWidthsAndHeights(camera.getFov(), camera.getNearPlane());
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class ShadowBox {
 		Vector3f toFar = new Vector3f(forwardVector);
 		toFar.scale(SHADOW_DISTANCE);
 		Vector3f toNear = new Vector3f(forwardVector);
-		toNear.scale(MasterRenderer.NEAR_PLANE);
+		toNear.scale(cam.getNearPlane());
 		Vector3f centerNear = Vector3f.add(toNear, cam.getPosition(), null);
 		Vector3f centerFar = Vector3f.add(toFar, cam.getPosition(), null);
 
@@ -225,10 +225,9 @@ public class ShadowBox {
 	 * by bringing the far-plane closer, which would increase shadow resolution
 	 * but means that distant objects wouldn't cast shadows.
 	 */
-	private void calculateWidthsAndHeights(float fov) {
+	private void calculateWidthsAndHeights(float fov, float nearPlane) {
 		farWidth = (float) (SHADOW_DISTANCE * Math.tan(Math.toRadians(fov)));
-		nearWidth = (float) (MasterRenderer.NEAR_PLANE
-				* Math.tan(Math.toRadians(fov)));
+		nearWidth = (float) (nearPlane * Math.tan(Math.toRadians(fov)));
 		farHeight = farWidth / getAspectRatio();
 		nearHeight = nearWidth / getAspectRatio();
 	}

@@ -79,7 +79,7 @@ public class MainGameLoop {
 		TexturedModel stanfordBunny = new TexturedModel(bunnyModel,
 				new ModelTexture(loader.loadTexture("playerTexture")));
 		Player player = new Player(stanfordBunny, new Vector3f(75, 5, -75), 0, 100, 0, 0.6f);
-		Camera camera = new Camera(player, 60);
+		Camera camera = new Camera(player, 60, 0.1f, 1400);
 		MasterRenderer renderer = new MasterRenderer(loader, camera);
 		TextMaster.init(loader);
 		ParticleMaster.init(loader, renderer.getProjectionMatrix());

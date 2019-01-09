@@ -9,9 +9,6 @@ import toolbox.ICamera;
 
 public class Camera implements ICamera{
 	
-	private static final float NEAR_PLANE = 0.1f;
-	private static final float FAR_PLANE = 1400;
-	
 	private Matrix4f projectionMatrix;
 	private Matrix4f viewMatrix = new Matrix4f();
 	
@@ -23,12 +20,17 @@ public class Camera implements ICamera{
 	private float yaw = 0;
 	private float roll;
 	private float fov;
+	private float nearPlane;
+	private float farPlane;
 	
 	private Player player;
 	
-	public Camera(Player player, float fov){
+	public Camera(Player player, float fov, float nearPlane, float farPlane){
 		this.player = player;
-		this.projectionMatrix = createProjectionMatrix(fov);
+		this.fov = fov;
+		this.nearPlane = nearPlane;
+		this.farPlane = farPlane;
+		this.projectionMatrix = createProjectionMatrix(fov, nearPlane, farPlane);
 	}
 	
 	public void move(){
@@ -138,6 +140,22 @@ public class Camera implements ICamera{
 		this.fov = fov;
 	}
 
+	public float getNearPlane() {
+		return nearPlane;
+	}
+
+	public void setNearPlane(float nearPlane) {
+		this.nearPlane = nearPlane;
+	}
+
+	public float getFarPlane() {
+		return farPlane;
+	}
+
+	public void setFarPlane(float farPlane) {
+		this.farPlane = farPlane;
+	}
+
 	private void updateViewMatrix() {
 		viewMatrix.setIdentity();
 		Matrix4f.rotate((float) Math.toRadians(pitch), new Vector3f(1, 0, 0), viewMatrix,
@@ -147,18 +165,18 @@ public class Camera implements ICamera{
 		Matrix4f.translate(negativeCameraPos, viewMatrix, viewMatrix);
 	}
 
-	private static Matrix4f createProjectionMatrix(float fov){
+	private static Matrix4f createProjectionMatrix(float fov, float nearPlane, float farPlane){
 		Matrix4f projectionMatrix = new Matrix4f();
 		float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
 		float y_scale = (float) ((1f / Math.tan(Math.toRadians(fov / 2f))));
 		float x_scale = y_scale / aspectRatio;
-		float frustum_length = FAR_PLANE - NEAR_PLANE;
+		float frustum_length = farPlane - nearPlane;
 	
 		projectionMatrix.m00 = x_scale;
 		projectionMatrix.m11 = y_scale;
-		projectionMatrix.m22 = -((FAR_PLANE + NEAR_PLANE) / frustum_length);
+		projectionMatrix.m22 = -((farPlane + nearPlane) / frustum_length);
 		projectionMatrix.m23 = -1;
-		projectionMatrix.m32 = -((2 * NEAR_PLANE * FAR_PLANE) / frustum_length);
+		projectionMatrix.m32 = -((2 * nearPlane * farPlane) / frustum_length);
 		projectionMatrix.m33 = 0;
 		return projectionMatrix;
 	}

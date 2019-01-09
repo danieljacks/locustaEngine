@@ -33,10 +33,6 @@ import toolbox.ICamera;
 
 public class MasterRenderer {
 
-
-	public static final float NEAR_PLANE = 0.1f;
-	public static final float FAR_PLANE = 1100;
-
 	private static final Vector4f NO_CLIP = new Vector4f(0, 0, 0, 1);
 
 	private Matrix4f projectionMatrix;
@@ -57,7 +53,7 @@ public class MasterRenderer {
 
 	public MasterRenderer(Loader loader, Camera camera) {
 		enableCulling();
-		createProjectionMatrix(60);
+		createProjectionMatrix(camera.getFov(), camera.getNearPlane(), camera.getFarPlane());
 		staticRenderer = new EntityRenderer(shader, projectionMatrix);
 		terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
 		skyboxRenderer = new SkyboxRenderer(loader, projectionMatrix);
@@ -214,18 +210,18 @@ public class MasterRenderer {
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, getShadowMapTexture());
 	}
 
-	private void createProjectionMatrix(float fov) {
+	private void createProjectionMatrix(float fov, float nearPlane, float farPlane) {
 		projectionMatrix = new Matrix4f();
 		float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
 		float y_scale = (float) ((1f / Math.tan(Math.toRadians(fov / 2f))));
 		float x_scale = y_scale / aspectRatio;
-		float frustum_length = FAR_PLANE - NEAR_PLANE;
+		float frustum_length = farPlane - nearPlane;
 
 		projectionMatrix.m00 = x_scale;
 		projectionMatrix.m11 = y_scale;
-		projectionMatrix.m22 = -((FAR_PLANE + NEAR_PLANE) / frustum_length);
+		projectionMatrix.m22 = -((farPlane + nearPlane) / frustum_length);
 		projectionMatrix.m23 = -1;
-		projectionMatrix.m32 = -((2 * NEAR_PLANE * FAR_PLANE) / frustum_length);
+		projectionMatrix.m32 = -((2 * nearPlane * farPlane) / frustum_length);
 		projectionMatrix.m33 = 0;
 	}
 	
