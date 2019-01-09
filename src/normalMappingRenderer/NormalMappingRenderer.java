@@ -8,9 +8,9 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
-import entities.Camera;
 import entities.Entity;
 import entities.Light;
 import models.RawModel;
@@ -32,9 +32,10 @@ public class NormalMappingRenderer {
 		shader.stop();
 	}
 
-	public void render(Map<TexturedModel, List<Entity>> entities, Vector4f clipPlane, List<Light> lights, ICamera camera) {
+	public void render(Map<TexturedModel, List<Entity>> entities, Vector4f clipPlane, List<Light> lights,
+			ICamera camera, Vector3f skyColor) {
 		shader.start();
-		prepare(clipPlane, lights, camera);
+		prepare(clipPlane, lights, camera, skyColor);
 		for (TexturedModel model : entities.keySet()) {
 			prepareTexturedModel(model);
 			List<Entity> batch = entities.get(model);
@@ -46,8 +47,8 @@ public class NormalMappingRenderer {
 		}
 		shader.stop();
 	}
-	
-	public void cleanUp(){
+
+	public void cleanUp() {
 		shader.cleanUp();
 	}
 
@@ -69,7 +70,7 @@ public class NormalMappingRenderer {
 		GL13.glActiveTexture(GL13.GL_TEXTURE1);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getNormalMap());
 		shader.loadSpecularMap(texture.hasSpecularMap());
-		if(texture.hasSpecularMap()){
+		if (texture.hasSpecularMap()) {
 			GL13.glActiveTexture(GL13.GL_TEXTURE2);
 			GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.getSpecularMap());
 		}
@@ -91,12 +92,12 @@ public class NormalMappingRenderer {
 		shader.loadOffset(entity.getTextureXOffset(), entity.getTextureYOffset());
 	}
 
-	private void prepare(Vector4f clipPlane, List<Light> lights, ICamera camera) {
+	private void prepare(Vector4f clipPlane, List<Light> lights, ICamera camera, Vector3f color) {
 		shader.loadClipPlane(clipPlane);
-		//need to be public variables in MasterRenderer
-		shader.loadSkyColour(MasterRenderer.RED, MasterRenderer.GREEN, MasterRenderer.BLUE);
+		// need to be public variables in MasterRenderer
+		shader.loadSkyColour(color);
 		Matrix4f viewMatrix = Maths.createViewMatrix(camera);
-		
+
 		shader.loadLights(lights, viewMatrix);
 		shader.loadViewMatrix(viewMatrix);
 	}

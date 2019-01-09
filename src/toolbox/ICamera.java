@@ -12,5 +12,6 @@ public interface ICamera {
 	public Matrix4f getProjectionViewMatrix();
 	public float getPitch();
 	public float getYaw();
+	public float getFov();
 
 }

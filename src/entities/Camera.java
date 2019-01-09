@@ -9,7 +9,6 @@ import toolbox.ICamera;
 
 public class Camera implements ICamera{
 	
-	private static final float FOV = 60;
 	private static final float NEAR_PLANE = 0.1f;
 	private static final float FAR_PLANE = 1400;
 	
@@ -23,12 +22,13 @@ public class Camera implements ICamera{
 	private float pitch = 20;
 	private float yaw = 0;
 	private float roll;
+	private float fov;
 	
 	private Player player;
 	
-	public Camera(Player player){
+	public Camera(Player player, float fov){
 		this.player = player;
-		this.projectionMatrix = createProjectionMatrix();
+		this.projectionMatrix = createProjectionMatrix(fov);
 	}
 	
 	public void move(){
@@ -127,10 +127,17 @@ public class Camera implements ICamera{
 
 	@Override
 	public Matrix4f getProjectionViewMatrix() {
-		// TODO Auto-generated method stub
 		return Matrix4f.mul(projectionMatrix, viewMatrix, null);
 	}
 	
+	public float getFov() {
+		return fov;
+	}
+
+	public void setFov(float fov) {
+		this.fov = fov;
+	}
+
 	private void updateViewMatrix() {
 		viewMatrix.setIdentity();
 		Matrix4f.rotate((float) Math.toRadians(pitch), new Vector3f(1, 0, 0), viewMatrix,
@@ -140,10 +147,10 @@ public class Camera implements ICamera{
 		Matrix4f.translate(negativeCameraPos, viewMatrix, viewMatrix);
 	}
 
-	private static Matrix4f createProjectionMatrix(){
+	private static Matrix4f createProjectionMatrix(float fov){
 		Matrix4f projectionMatrix = new Matrix4f();
 		float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
-		float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));
+		float y_scale = (float) ((1f / Math.tan(Math.toRadians(fov / 2f))));
 		float x_scale = y_scale / aspectRatio;
 		float frustum_length = FAR_PLANE - NEAR_PLANE;
 	

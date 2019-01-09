@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 import entities.Camera;
 import renderEngine.DisplayManager;
@@ -27,7 +28,7 @@ public class SkyboxRenderer {
 		shader.stop();
 	}
 	
-	public void render(ICamera iCamera, float r, float g, float b){
+	public void render(ICamera iCamera, Vector3f skyColor){
 		shader.start();
 		GL11.glDepthMask(false);
 		OpenGlUtils.disableBlending();
@@ -35,7 +36,7 @@ public class SkyboxRenderer {
 		OpenGlUtils.cullBackFaces(true);
         OpenGlUtils.antialias(false);
 		shader.loadViewMatrix(iCamera);
-		shader.loadFogColour(r, g, b);
+		shader.loadFogColour(skyColor);
 		GL30.glBindVertexArray(skybox.getCube().getVaoID());
 		GL20.glEnableVertexAttribArray(0);
 		bindTextures();

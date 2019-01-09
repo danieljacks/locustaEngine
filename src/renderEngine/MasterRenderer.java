@@ -9,6 +9,7 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 import animationRenderer.AnimatedModelRenderer;
@@ -32,13 +33,9 @@ import toolbox.ICamera;
 
 public class MasterRenderer {
 
-	public static final float FOV = 60;
+
 	public static final float NEAR_PLANE = 0.1f;
 	public static final float FAR_PLANE = 1100;
-
-	public static final float RED = 0.83f;
-	public static final float GREEN = 0.9f;
-	public static final float BLUE = 0.92f;
 
 	private static final Vector4f NO_CLIP = new Vector4f(0, 0, 0, 1);
 
@@ -60,7 +57,7 @@ public class MasterRenderer {
 
 	public MasterRenderer(Loader loader, Camera camera) {
 		enableCulling();
-		createProjectionMatrix();
+		createProjectionMatrix(60);
 		staticRenderer = new EntityRenderer(shader, projectionMatrix);
 		terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
 		skyboxRenderer = new SkyboxRenderer(loader, projectionMatrix);
@@ -92,26 +89,26 @@ public class MasterRenderer {
 		for (Entity entity : scene.getNormalMapEntities()) {
 			processNormalMapEntity(entity);
 		}
-		prepare();
+		prepare(scene.getSky().getColour());
 
 		shader.start();
 		shader.loadClipPlane(NO_CLIP);
-		shader.loadSkyColour(RED, GREEN, BLUE);
+		shader.loadSkyColour(scene.getSky().getColour());
 		shader.loadLights(scene.getLights());
 		shader.loadViewMatrix(cubeMapCamera);
 		staticRenderer.render(entityBatch);
 		shader.stop();
-		normalMapRenderer.render(normalMapEntityBatch, NO_CLIP, scene.getLights(), cubeMapCamera);
+		normalMapRenderer.render(normalMapEntityBatch, NO_CLIP, scene.getLights(), cubeMapCamera, scene.getSky().getColour());
 		terrainShader.start();
 		terrainShader.loadClipPlane(NO_CLIP);
-		terrainShader.loadSkyColour(RED, GREEN, BLUE);
+		terrainShader.loadSkyColour(scene.getSky().getColour());
 		terrainShader.loadLights(scene.getLights());
 		terrainShader.loadViewMatrix(cubeMapCamera);
 		terrainRenderer.render(scene.getTerrains(), shadowMapRenderer.getToShadowMapSpaceMatrix());
 		terrainShader.stop();
 		shinyShader.loadViewMatrix(cubeMapCamera);
 		shinyRenderer.render(scene.getShinyEntities(), cubeMapCamera);
-		skyboxRenderer.render(cubeMapCamera, RED, GREEN, BLUE);
+		skyboxRenderer.render(cubeMapCamera, new Vector3f(scene.getSky().getColour()));
 		sunRenderer.render(scene.getSky().getSuns(),scene.getCamera());
 		// terrains.clear();
 		entityBatch.clear();
@@ -121,25 +118,25 @@ public class MasterRenderer {
 	}
 
 	public void render(Scene scene, Vector4f clipPlane) {
-		prepare();
+		prepare(scene.getSky().getColour());
 		shader.start();
 		shader.loadClipPlane(clipPlane);
-		shader.loadSkyColour(RED, GREEN, BLUE);
+		shader.loadSkyColour(scene.getSky().getColour());
 		shader.loadLights(scene.getLights());
 		shader.loadViewMatrix(scene.getCamera());
 		staticRenderer.render(entityBatch);
 		shader.stop();
-		normalMapRenderer.render(normalMapEntityBatch, clipPlane, scene.getLights(), scene.getCamera());
+		normalMapRenderer.render(normalMapEntityBatch, clipPlane, scene.getLights(), scene.getCamera(), scene.getSky().getColour());
 		terrainShader.start();
 		terrainShader.loadClipPlane(clipPlane);
-		terrainShader.loadSkyColour(RED, GREEN, BLUE);
+		terrainShader.loadSkyColour(scene.getSky().getColour());
 		terrainShader.loadLights(scene.getLights());
 		terrainShader.loadViewMatrix(scene.getCamera());
 		terrainRenderer.render(scene.getTerrains(), shadowMapRenderer.getToShadowMapSpaceMatrix());
 		terrainShader.stop();
 		shinyShader.loadViewMatrix(scene.getCamera());
 		shinyRenderer.render(scene.getShinyEntities(), scene.getCamera());
-		skyboxRenderer.render(scene.getCamera(), RED, GREEN, BLUE);
+		skyboxRenderer.render(scene.getCamera(), scene.getSky().getColour());
 		sunRenderer.render(scene.getSky().getSuns(),scene.getCamera());
 		animatedRenderer.render(scene.getAnimatedEntities(), scene.getCamera(), scene.getSky().getSuns().get(0).getLightDirection(), scene.getFog(), scene.getSky());
 		// terrains.clear();
@@ -209,18 +206,18 @@ public class MasterRenderer {
 		animatedRenderer.cleanUp();
 	}
 
-	public void prepare() {
+	public void prepare(Vector3f skyColor) {
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-		GL11.glClearColor(RED, GREEN, BLUE, 1);
+		GL11.glClearColor(skyColor.getX(), skyColor.getY(), skyColor.getZ(), 1);
 		GL13.glActiveTexture(GL13.GL_TEXTURE5);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, getShadowMapTexture());
 	}
 
-	private void createProjectionMatrix() {
+	private void createProjectionMatrix(float fov) {
 		projectionMatrix = new Matrix4f();
 		float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
-		float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));
+		float y_scale = (float) ((1f / Math.tan(Math.toRadians(fov / 2f))));
 		float x_scale = y_scale / aspectRatio;
 		float frustum_length = FAR_PLANE - NEAR_PLANE;
 

@@ -59,8 +59,6 @@ import water.WaterTile;
 
 public class MainGameLoop {
 
-	private static final float WATER_LEVEL = -10;
-
 	public static void main(String[] args) {
 
 		DisplayManager.createDisplay();
@@ -81,7 +79,7 @@ public class MainGameLoop {
 		TexturedModel stanfordBunny = new TexturedModel(bunnyModel,
 				new ModelTexture(loader.loadTexture("playerTexture")));
 		Player player = new Player(stanfordBunny, new Vector3f(75, 5, -75), 0, 100, 0, 0.6f);
-		Camera camera = new Camera(player);
+		Camera camera = new Camera(player, 60);
 		MasterRenderer renderer = new MasterRenderer(loader, camera);
 		TextMaster.init(loader);
 		ParticleMaster.init(loader, renderer.getProjectionMatrix());
@@ -172,6 +170,20 @@ public class MainGameLoop {
 		boulderModel.getTexture().setShineDamper(10);
 		boulderModel.getTexture().setReflectivity(0.5f);
 
+		// **********Water Renderer Set-up************************
+
+				WaterFrameBuffers buffers = new WaterFrameBuffers();
+				WaterShader waterShader = new WaterShader();
+				WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix(), buffers);
+				List<WaterTile> waters = new ArrayList<WaterTile>();
+				WaterTile water = new WaterTile(-10, 75, -75, 500);
+				waters.add(water);
+				for (int i = 0; i < 5; i++) {
+					for (int j = 0; j < 5; j++) {
+						// waters.add(new WaterTile(i*160, -j*160, 0));
+					}
+				}
+		
 		// ************ENTITIES*******************
 
 		Entity entity = new Entity(barrelModel, new Vector3f(75, 10, -75), 0, 0, 0, 1f);
@@ -186,7 +198,7 @@ public class MainGameLoop {
 			float x = random.nextFloat() * 1000;
 			float z = random.nextFloat() * -1000;
 			float y = terrain.getHeightOfTerrain(x, z);
-			if (y >= WATER_LEVEL) {
+			if (y >= water.getHeight()) {
 				if (i % 3 == 0) {
 					entities.add(new Entity(fern, random.nextInt(4), new Vector3f(x, y, z), 0, random.nextFloat() * 360,
 							0, 0.9f));
@@ -231,20 +243,6 @@ public class MainGameLoop {
 				new Vector2f(0.1f, 0.15f)));
 		GuiRenderer guiRenderer = new GuiRenderer(loader);
 		MousePicker picker = new MousePicker(camera, renderer.getProjectionMatrix(), terrain);
-
-		// **********Water Renderer Set-up************************
-
-		WaterFrameBuffers buffers = new WaterFrameBuffers();
-		WaterShader waterShader = new WaterShader();
-		WaterRenderer waterRenderer = new WaterRenderer(loader, waterShader, renderer.getProjectionMatrix(), buffers);
-		List<WaterTile> waters = new ArrayList<WaterTile>();
-		WaterTile water = new WaterTile(75, -75, WATER_LEVEL);
-		waters.add(water);
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 5; j++) {
-				// waters.add(new WaterTile(i*160, -j*160, 0));
-			}
-		}
 
 		// **********Particles************************
 

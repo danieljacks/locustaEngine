@@ -11,12 +11,12 @@ public class CubeMapCamera implements ICamera {
 
 	private static final float NEAR_PLANE = 0.1f;
 	private static final float FAR_PLANE = 200f;
-	private static final float FOV = 90;// don't change!
 	private static final float ASPECT_RATIO = 1;
 
 	private final Vector3f center;
 	private float pitch = 0;
 	private float yaw = 0;
+	private float fov = 90;
 
 	private Matrix4f projectionMatrix = new Matrix4f();
 	private Matrix4f viewMatrix = new Matrix4f();
@@ -83,7 +83,7 @@ public class CubeMapCamera implements ICamera {
 	}
 
 	private void createProjectionMatrix() {
-		float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))));
+		float y_scale = (float) ((1f / Math.tan(Math.toRadians(this.fov / 2f))));
 		float x_scale = y_scale / ASPECT_RATIO;
 		float frustum_length = FAR_PLANE - NEAR_PLANE;
 
@@ -108,14 +108,17 @@ public class CubeMapCamera implements ICamera {
 
 	@Override
 	public float getPitch() {
-		// TODO Auto-generated method stub
-		return 0;
+		return pitch;
 	}
 
 	@Override
 	public float getYaw() {
-		// TODO Auto-generated method stub
-		return 0;
+		return yaw;
+	}
+
+	@Override
+	public float getFov() {
+		return fov;
 	}
 
 }

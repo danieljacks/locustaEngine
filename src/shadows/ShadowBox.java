@@ -53,7 +53,7 @@ public class ShadowBox {
 	protected ShadowBox(Matrix4f lightViewMatrix, Camera camera) {
 		this.lightViewMatrix = lightViewMatrix;
 		this.cam = camera;
-		calculateWidthsAndHeights();
+		calculateWidthsAndHeights(camera.getFov());
 	}
 
 	/**
@@ -225,10 +225,10 @@ public class ShadowBox {
 	 * by bringing the far-plane closer, which would increase shadow resolution
 	 * but means that distant objects wouldn't cast shadows.
 	 */
-	private void calculateWidthsAndHeights() {
-		farWidth = (float) (SHADOW_DISTANCE * Math.tan(Math.toRadians(MasterRenderer.FOV)));
+	private void calculateWidthsAndHeights(float fov) {
+		farWidth = (float) (SHADOW_DISTANCE * Math.tan(Math.toRadians(fov)));
 		nearWidth = (float) (MasterRenderer.NEAR_PLANE
-				* Math.tan(Math.toRadians(MasterRenderer.FOV)));
+				* Math.tan(Math.toRadians(fov)));
 		farHeight = farWidth / getAspectRatio();
 		nearHeight = nearWidth / getAspectRatio();
 	}

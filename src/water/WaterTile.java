@@ -2,15 +2,18 @@ package water;
 
 public class WaterTile {
 	
-	public static final float TILE_SIZE = 1000;
-	
 	private float height;
 	private float x,z;
+	private float size;
 	
-	public WaterTile(float centerX, float centerZ, float height){
-		this.x = centerX;
-		this.z = centerZ;
+	public WaterTile(){}
+
+	public WaterTile(float height, float x, float z, float size) {
+		super();
 		this.height = height;
+		this.x = x;
+		this.z = z;
+		this.size = size;
 	}
 
 	public float getHeight() {
@@ -25,6 +28,11 @@ public class WaterTile {
 		return z;
 	}
 
+	public float getSize() {
+		return size;
+	}
 
-
+	public void setSize(float size) {
+		this.size = size;
+	}
 }
