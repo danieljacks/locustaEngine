@@ -14,8 +14,6 @@ import entities.Light;
 
 public class StaticShader extends ShaderProgram{
 	
-	private static final int MAX_LIGHTS = 4;
-	
 	private static final String VERTEX_FILE = "/shaders/vertexShader.txt";
 	private static final String FRAGMENT_FILE = "/shaders/fragmentShader.txt";
 	
@@ -36,8 +34,8 @@ public class StaticShader extends ShaderProgram{
 	private int location_usesSpecularMap;
 	private int location_modelTexture;
 
-	public StaticShader() {
-		super(VERTEX_FILE, FRAGMENT_FILE);
+	public StaticShader(int maxLights) {
+		super(VERTEX_FILE, FRAGMENT_FILE, maxLights);
 	}
 
 	@Override
@@ -63,10 +61,10 @@ public class StaticShader extends ShaderProgram{
 		location_usesSpecularMap = super.getUniformLocation("usesSpecularMap");
 		location_modelTexture = super.getUniformLocation("modelTexture");
 		
-		location_lightPosition = new int[MAX_LIGHTS];
-		location_lightColour = new int[MAX_LIGHTS];
-		location_attenuation = new int[MAX_LIGHTS];
-		for(int i=0;i<MAX_LIGHTS;i++){
+		location_lightPosition = new int[this.getMaxLights()];
+		location_lightColour = new int[this.getMaxLights()];
+		location_attenuation = new int[this.getMaxLights()];
+		for(int i=0;i<this.getMaxLights();i++){
 			location_lightPosition[i] = super.getUniformLocation("lightPosition[" + i + "]");
 			location_lightColour[i] = super.getUniformLocation("lightColour[" + i + "]");
 			location_attenuation[i] = super.getUniformLocation("attenuation[" + i + "]");
@@ -116,7 +114,7 @@ public class StaticShader extends ShaderProgram{
 	}
 	
 	public void loadLights(List<Light> lights){
-		for(int i=0;i<MAX_LIGHTS;i++){
+		for(int i=0;i<this.getMaxLights();i++){
 			if(i<lights.size()){
 				super.loadVector(location_lightPosition[i], lights.get(i).getPosition());
 				super.loadVector(location_lightColour[i], lights.get(i).getColour());

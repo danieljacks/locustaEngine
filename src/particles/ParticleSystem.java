@@ -65,20 +65,20 @@ public class ParticleSystem {
         this.scaleError = error * averageScale;
     }
  
-    public void generateParticles(Vector3f systemCenter) {
+    public void generateParticles(Vector3f systemCenter, float gravity) {
         float delta = DisplayManager.getFrameTime();
         float particlesToCreate = pps * delta;
         int count = (int) Math.floor(particlesToCreate);
         float partialParticle = particlesToCreate % 1;
         for (int i = 0; i < count; i++) {
-            emitParticle(systemCenter);
+            emitParticle(systemCenter, gravity);
         }
         if (Math.random() < partialParticle) {
-            emitParticle(systemCenter);
+            emitParticle(systemCenter, gravity);
         }
     }
  
-    private void emitParticle(Vector3f center) {
+    private void emitParticle(Vector3f center, float gravity) {
         Vector3f velocity = null;
         if(direction!=null){
             velocity = generateRandomUnitVectorWithinCone(direction, directionDeviation);
@@ -89,7 +89,7 @@ public class ParticleSystem {
         velocity.scale(generateValue(averageSpeed, speedError));
         float scale = generateValue(averageScale, scaleError);
         float lifeLength = generateValue(averageLifeLength, lifeError);
-        new Particle(texture, new Vector3f(center), velocity, gravityComplient, lifeLength, generateRotation(), scale);
+        new Particle(texture, new Vector3f(center), velocity, gravityComplient, lifeLength, generateRotation(), scale, gravity);
     }
  
     private float generateValue(float average, float errorMargin) {

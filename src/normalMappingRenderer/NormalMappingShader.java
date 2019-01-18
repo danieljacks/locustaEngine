@@ -12,8 +12,6 @@ import shaders.ShaderProgram;
 
 public class NormalMappingShader extends ShaderProgram{
 	
-	private static final int MAX_LIGHTS = 4;
-	
 	private static final String VERTEX_FILE = "/normalMappingRenderer/normalMapVShader.txt";
 	private static final String FRAGMENT_FILE = "/normalMappingRenderer/normalMapFShader.txt";
 	
@@ -34,8 +32,8 @@ public class NormalMappingShader extends ShaderProgram{
 	private int location_specularMap;
 	private int location_usesSpecularMap;
 
-	public NormalMappingShader() {
-		super(VERTEX_FILE, FRAGMENT_FILE);
+	public NormalMappingShader(int maxLights) {
+		super(VERTEX_FILE, FRAGMENT_FILE, maxLights);
 	}
 
 	@Override
@@ -62,10 +60,10 @@ public class NormalMappingShader extends ShaderProgram{
 		location_specularMap = super.getUniformLocation("specularMap");
 		location_usesSpecularMap = super.getUniformLocation("usesSpecularMap");
 		
-		location_lightPositionEyeSpace = new int[MAX_LIGHTS];
-		location_lightColour = new int[MAX_LIGHTS];
-		location_attenuation = new int[MAX_LIGHTS];
-		for(int i=0;i<MAX_LIGHTS;i++){
+		location_lightPositionEyeSpace = new int[this.getMaxLights()];
+		location_lightColour = new int[this.getMaxLights()];
+		location_attenuation = new int[this.getMaxLights()];
+		for(int i=0;i<this.getMaxLights();i++){
 			location_lightPositionEyeSpace[i] = super.getUniformLocation("lightPositionEyeSpace[" + i + "]");
 			location_lightColour[i] = super.getUniformLocation("lightColour[" + i + "]");
 			location_attenuation[i] = super.getUniformLocation("attenuation[" + i + "]");
@@ -112,7 +110,7 @@ public class NormalMappingShader extends ShaderProgram{
 	}
 	
 	protected void loadLights(List<Light> lights, Matrix4f viewMatrix){
-		for(int i=0;i<MAX_LIGHTS;i++){
+		for(int i=0;i<this.getMaxLights();i++){
 			if(i<lights.size()){
 				super.loadVector(location_lightPositionEyeSpace[i], getEyeSpacePosition(lights.get(i), viewMatrix));
 				super.loadVector(location_lightColour[i], lights.get(i).getColour());

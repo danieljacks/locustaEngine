@@ -8,7 +8,7 @@ public class BrightFilterShader extends ShaderProgram{
 	private static final String FRAGMENT_FILE = "/bloom/brightFilterFragment.txt";
 	
 	public BrightFilterShader() {
-		super(VERTEX_FILE, FRAGMENT_FILE);
+		super(VERTEX_FILE, FRAGMENT_FILE, 0);
 	}
 
 	@Override

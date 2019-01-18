@@ -26,7 +26,7 @@ public class SkyboxShader extends ShaderProgram{
     private float rotation = 0;
      
     public SkyboxShader() {
-        super(VERTEX_FILE, FRAGMENT_FILE);
+        super(VERTEX_FILE, FRAGMENT_FILE, 0);
     }
      
     public void loadProjectionMatrix(Matrix4f matrix){

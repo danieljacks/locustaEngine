@@ -15,7 +15,7 @@ public class ParticleShader extends ShaderProgram {
 
 
 	public ParticleShader() {
-		super(VERTEX_FILE, FRAGMENT_FILE);
+		super(VERTEX_FILE, FRAGMENT_FILE, 0);
 	}
 
 	@Override

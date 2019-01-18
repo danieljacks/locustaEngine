@@ -34,32 +34,38 @@ import toolbox.ICamera;
 public class MasterRenderer {
 
 	private static final Vector4f NO_CLIP = new Vector4f(0, 0, 0, 1);
+	
+	private int maxLights;
 
 	private Matrix4f projectionMatrix;
 	private Map<TexturedModel, List<Entity>> entityBatch = new HashMap<TexturedModel, List<Entity>>();
 	private Map<TexturedModel, List<Entity>> normalMapEntityBatch = new HashMap<TexturedModel, List<Entity>>();
 
-	private StaticShader shader = new StaticShader();
+	private StaticShader shader;
 	private EntityRenderer staticRenderer;
 	private ShinyRenderer shinyRenderer;
-	private ShinyShader shinyShader = new ShinyShader();
+	private ShinyShader shinyShader;
 	private TerrainRenderer terrainRenderer;
-	private TerrainShader terrainShader = new TerrainShader();
+	private TerrainShader terrainShader;
 	private NormalMappingRenderer normalMapRenderer;
 	private SkyboxRenderer skyboxRenderer;
 	private ShadowMapMasterRenderer shadowMapRenderer;
 	private SunRenderer sunRenderer;
 	private AnimatedModelRenderer animatedRenderer;
 
-	public MasterRenderer(Loader loader, Camera camera) {
+	public MasterRenderer(Loader loader, Camera camera, int maxLights) {
+		this.maxLights = maxLights;
+		terrainShader = new TerrainShader(maxLights);
+		shader = new StaticShader(maxLights);
+		shinyShader = new ShinyShader();
 		enableCulling();
 		createProjectionMatrix(camera.getFov(), camera.getNearPlane(), camera.getFarPlane());
 		staticRenderer = new EntityRenderer(shader, projectionMatrix);
 		terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
-		skyboxRenderer = new SkyboxRenderer(loader, projectionMatrix);
-		normalMapRenderer = new NormalMappingRenderer(projectionMatrix);
-		shadowMapRenderer = new ShadowMapMasterRenderer(camera);
-		shinyRenderer = new ShinyRenderer(projectionMatrix, new Skybox(loader));
+		skyboxRenderer = new SkyboxRenderer(loader, projectionMatrix, 1200);
+		normalMapRenderer = new NormalMappingRenderer(projectionMatrix, maxLights);
+		shadowMapRenderer = new ShadowMapMasterRenderer(camera, 100, 300, 4096); //TODO: remove hardcoded
+		shinyRenderer = new ShinyRenderer(projectionMatrix, new Skybox(loader, 1200));
 		sunRenderer = new SunRenderer(loader);
 		animatedRenderer = new AnimatedModelRenderer();
 	}
@@ -227,6 +233,14 @@ public class MasterRenderer {
 	
 	public void renderEnvironmentMap(Scene scene, ShinyEntity entity){
 		EnviroMapRenderer.renderEnvironmentMap(scene, entity, this);
+	}
+
+	public int getMaxLights() {
+		return maxLights;
+	}
+
+	public void setMaxLights(int maxLights) {
+		this.maxLights = maxLights;
 	}
 
 }

@@ -24,7 +24,7 @@ public class FlareShader extends ShaderProgram {
 	private int location_flareTexture;
 
 	public FlareShader() {
-		super(VERTEX_FILE, FRAGMENT_FILE);
+		super(VERTEX_FILE, FRAGMENT_FILE, 0);
 	}
 
 	@Override

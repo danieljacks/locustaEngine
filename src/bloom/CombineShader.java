@@ -11,7 +11,7 @@ public class CombineShader extends ShaderProgram {
 	private int location_highlightTexture;
 	
 	protected CombineShader() {
-		super(VERTEX_FILE, FRAGMENT_FILE);
+		super(VERTEX_FILE, FRAGMENT_FILE, 0);
 	}
 	
 	@Override

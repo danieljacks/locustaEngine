@@ -65,6 +65,7 @@ public class MainGameLoop {
 		Loader loader = new Loader();
 		
 		Scene scene = new Scene();
+		scene.setGravity(-50f);
 		RawModel bunnyModel = OBJLoader.loadObjModel("person", loader);
 		RawModel teaModel = OBJLoader.loadObjModel("tea", loader);
 		TexturedModel teapot = new TexturedModel(teaModel,
@@ -78,9 +79,9 @@ public class MainGameLoop {
 		
 		TexturedModel stanfordBunny = new TexturedModel(bunnyModel,
 				new ModelTexture(loader.loadTexture("playerTexture")));
-		Player player = new Player(stanfordBunny, new Vector3f(75, 5, -75), 0, 100, 0, 0.6f);
-		Camera camera = new Camera(player, 60, 0.1f, 1400);
-		MasterRenderer renderer = new MasterRenderer(loader, camera);
+		Player player = new Player(stanfordBunny, new Vector3f(75, 5, -75), 0, 100, 0, 0.6f, 40, 160, scene.getGravity(), 18);
+		Camera camera = new Camera(player, 60, 0.1f, 1600);
+		MasterRenderer renderer = new MasterRenderer(loader, camera, 8);
 		TextMaster.init(loader);
 		ParticleMaster.init(loader, renderer.getProjectionMatrix());
 		
@@ -224,8 +225,8 @@ public class MainGameLoop {
 		
 		List<ShinyEntity> shinies = new ArrayList<ShinyEntity>();
 		ShinyEntity shinyDragon = new ShinyEntity(teapot, new Vector3f(45, 10, 65), 0,0,0, 5f,128);
-		//shinies.add(new ShinyEntity(meta, new Vector3f(75, 10, -65), 0,0,0, 0.5f,128));
-		//shinies.add(new ShinyEntity(teapot, new Vector3f(65, 10, -65), 0,0,0, 0.34f,128));
+		shinies.add(new ShinyEntity(meta, new Vector3f(75, 10, 65), 0,0,0, 0.5f,128));
+		shinies.add(new ShinyEntity(teapot, new Vector3f(65, 10, 65), 0,0,0, 0.34f,128));
 		shinies.add(shinyDragon);
 		
 
@@ -291,10 +292,10 @@ public class MainGameLoop {
 		Animation animation = AnimationLoader.loadAnimation(new MyFile("res", "villager.dae"));
 		guy.doAnimation(animation);
 		
-		Fog fog = new Fog(0.003f, 6.0f);
+		Fog fog = new Fog(0.003f, 0.1f);
 		Sky sky = new Sky();
 		sky.setColour(new Vector3f(0.83f, 0.9f, 0.92f));
-		sky.setSkybox(new Skybox(loader));
+		sky.setSkybox(new Skybox(loader, 1200));
 		sky.setSuns(suns);
 		scene.setCamera(camera);
 		scene.setEntities(entities);
@@ -319,9 +320,9 @@ public class MainGameLoop {
 			if (Keyboard.isKeyDown(Keyboard.KEY_Y)) {
 				Vector3f position = new Vector3f(player.getPosition());
 				position.setY(position.getY() + 2.2f);
-				particleSystem_smoke.generateParticles(position);
+				particleSystem_smoke.generateParticles(position, scene.getGravity());
 			}
-			particleSystem_fire.generateParticles(new Vector3f(40, 5.5f, -30));
+			particleSystem_fire.generateParticles(new Vector3f(40, 5.5f, -30), scene.getGravity());
 			// particleSystem.generateParticles(picker.getCurrentTerrainPoint());
 			ParticleMaster.update(camera);
 

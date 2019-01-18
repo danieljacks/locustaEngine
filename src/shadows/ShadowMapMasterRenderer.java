@@ -24,8 +24,6 @@ import models.TexturedModel;
  */
 public class ShadowMapMasterRenderer {
 
-	private static final int SHADOW_MAP_SIZE = 4096; //shadow quality
-
 	private ShadowFrameBuffer shadowFbo;
 	private ShadowShader shader;
 	private ShadowBox shadowBox;
@@ -44,13 +42,15 @@ public class ShadowMapMasterRenderer {
 	 * {@link ShadowFrameBuffer} to which the scene is rendered. The size of the
 	 * shadow map is determined here.
 	 * 
-	 * @param camera
-	 *            - the camera being used in the scene.
+	 * @param camera - the camera being used in the scene.
+	 * @param offset
+	 * @param visibleDistance - incrases distance, decrases quality (kind of stupid, must be refactored)
+	 * @param shadowQuality - 1024, 2048, 4096 and so on. 4096 looks good with distance 150
 	 */
-	public ShadowMapMasterRenderer(Camera camera) {
+	public ShadowMapMasterRenderer(Camera camera, float offset, float visibleDistance, int shadowQuality) {
 		shader = new ShadowShader();
-		shadowBox = new ShadowBox(lightViewMatrix, camera);
-		shadowFbo = new ShadowFrameBuffer(SHADOW_MAP_SIZE, SHADOW_MAP_SIZE);
+		shadowBox = new ShadowBox(lightViewMatrix, camera, offset, visibleDistance);
+		shadowFbo = new ShadowFrameBuffer(shadowQuality, shadowQuality);
 		entityRenderer = new ShadowMapEntityRenderer(shader, projectionViewMatrix);
 	}
 

@@ -28,6 +28,8 @@ public class Scene {
 	private FlareManager flare;
 	private Fog fog;
 	
+	private float gravity;
+	
 	public List<Entity> getEntities() {
 		return entities;
 	}
@@ -136,5 +138,11 @@ public class Scene {
 	}
 	public void removeAnimatedEntity(AnimatedEntity entity){
 		animatedEntities.remove(entity);
+	}
+	public float getGravity() {
+		return gravity;
+	}
+	public void setGravity(float gravity) {
+		this.gravity = gravity;
 	}
 }

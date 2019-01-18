@@ -14,7 +14,7 @@ public class SunShader extends ShaderProgram {
 	private int location_sunTexture;
 
 	public SunShader() {
-		super(VERTEX_FILE, FRAGMENT_FILE);
+		super(VERTEX_FILE, FRAGMENT_FILE, 0);
 	}
 	
 	@Override

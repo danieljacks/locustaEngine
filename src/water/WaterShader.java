@@ -26,7 +26,7 @@ public class WaterShader extends ShaderProgram {
 	private int location_depthMap;
 
 	public WaterShader() {
-		super(VERTEX_FILE, FRAGMENT_FILE);
+		super(VERTEX_FILE, FRAGMENT_FILE, 0);
 	}
 
 	@Override

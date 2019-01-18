@@ -12,7 +12,7 @@ public class GuiShader extends ShaderProgram{
 	private int location_transformationMatrix;
 
 	public GuiShader() {
-		super(VERTEX_FILE, FRAGMENT_FILE);
+		super(VERTEX_FILE, FRAGMENT_FILE, 0);
 	}
 	
 	public void loadTransformation(Matrix4f matrix){

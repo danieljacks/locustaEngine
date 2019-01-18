@@ -10,7 +10,7 @@ public class HorizontalBlurShader extends ShaderProgram {
 	private int location_targetWidth;
 	
 	protected HorizontalBlurShader() {
-		super(VERTEX_FILE, FRAGMENT_FILE);
+		super(VERTEX_FILE, FRAGMENT_FILE, 0);
 	}
 
 	protected void loadTargetWidth(float width){

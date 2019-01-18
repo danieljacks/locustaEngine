@@ -23,9 +23,10 @@ public class Particle {
 	private float distance;
 	private Vector3f reusableChange = new Vector3f();
 	boolean alive = false;
+	private float gravity;
 
 	public Particle(ParticleTexture texture, Vector3f position, Vector3f velocity, float gravityEffect,
-			float lifeLength, float rotation, float scale) {
+			float lifeLength, float rotation, float scale, float gravity) {
 		this.texture = texture;
 		this.position = position;
 		this.velocity = velocity;
@@ -33,6 +34,7 @@ public class Particle {
 		this.lifeLength = lifeLength;
 		this.rotation = rotation;
 		this.scale = scale;
+		this.gravity = gravity;
 		ParticleMaster.addParticle(this);
 	}
 
@@ -52,7 +54,7 @@ public class Particle {
 	}
 
 	protected boolean update(Camera camera) {
-		velocity.y += Player.GRAVITY * gravityEffect * DisplayManager.getFrameTime();
+		velocity.y += this.gravity * gravityEffect * DisplayManager.getFrameTime();
 		reusableChange.set(velocity);
 		reusableChange.scale(DisplayManager.getFrameTime());
 		Vector3f.add(reusableChange, position, position);
@@ -111,6 +113,14 @@ public class Particle {
 
 	public float getScale() {
 		return scale;
+	}
+
+	public float getGravity() {
+		return gravity;
+	}
+
+	public void setGravity(float gravity) {
+		this.gravity = gravity;
 	}
 
 }

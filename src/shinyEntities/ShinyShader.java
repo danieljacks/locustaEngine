@@ -21,7 +21,7 @@ public class ShinyShader extends ShaderProgram{
 	private int location_enviroMap;
 
 	public ShinyShader() {
-		super(VERTEX_FILE, FRAGMENT_FILE);
+		super(VERTEX_FILE, FRAGMENT_FILE, 0);
 	}
 
 	@Override

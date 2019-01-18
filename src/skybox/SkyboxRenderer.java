@@ -19,8 +19,8 @@ public class SkyboxRenderer {
 	private SkyboxShader shader;
 	private float time =0;
 	
-	public SkyboxRenderer(Loader loader, Matrix4f projectionMatrix){
-		skybox = new Skybox(loader);
+	public SkyboxRenderer(Loader loader, Matrix4f projectionMatrix, float boxSize){
+		skybox = new Skybox(loader, boxSize);
 		shader = new SkyboxShader();
 		shader.start();
 		shader.connectTextureUnits();

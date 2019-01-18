@@ -24,8 +24,8 @@ public class NormalMappingRenderer {
 
 	private NormalMappingShader shader;
 
-	public NormalMappingRenderer(Matrix4f projectionMatrix) {
-		this.shader = new NormalMappingShader();
+	public NormalMappingRenderer(Matrix4f projectionMatrix, int maxLights) {
+		this.shader = new NormalMappingShader(maxLights);
 		shader.start();
 		shader.loadProjectionMatrix(projectionMatrix);
 		shader.connectTextureUnits();

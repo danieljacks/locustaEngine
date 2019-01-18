@@ -24,16 +24,16 @@ import renderEngine.MasterRenderer;
  */
 public class ShadowBox {
 
-	private static final float OFFSET = 150;
 	private static final Vector4f UP = new Vector4f(0, 1, 0, 0);
 	private static final Vector4f FORWARD = new Vector4f(0, 0, -1, 0);
-	private static final float SHADOW_DISTANCE = 150; //visible shadow range. higher decrases quality
 
 	private float minX, maxX;
 	private float minY, maxY;
 	private float minZ, maxZ;
 	private Matrix4f lightViewMatrix;
 	private Camera cam;
+	private float offset;
+	private float visibleDistance;
 
 	private float farHeight, farWidth, nearHeight, nearWidth;
 
@@ -50,7 +50,9 @@ public class ShadowBox {
 	 * @param camera
 	 *            - the in-game camera.
 	 */
-	protected ShadowBox(Matrix4f lightViewMatrix, Camera camera) {
+	protected ShadowBox(Matrix4f lightViewMatrix, Camera camera, float offset, float visibleDistance) {
+		this.offset = offset;
+		this.visibleDistance = visibleDistance;
 		this.lightViewMatrix = lightViewMatrix;
 		this.cam = camera;
 		calculateWidthsAndHeights(camera.getFov(), camera.getNearPlane());
@@ -67,7 +69,7 @@ public class ShadowBox {
 		Vector3f forwardVector = new Vector3f(Matrix4f.transform(rotation, FORWARD, null));
 
 		Vector3f toFar = new Vector3f(forwardVector);
-		toFar.scale(SHADOW_DISTANCE);
+		toFar.scale(this.visibleDistance);
 		Vector3f toNear = new Vector3f(forwardVector);
 		toNear.scale(cam.getNearPlane());
 		Vector3f centerNear = Vector3f.add(toNear, cam.getPosition(), null);
@@ -104,7 +106,7 @@ public class ShadowBox {
 				minZ = point.z;
 			}
 		}
-		maxZ += OFFSET;
+		maxZ += this.offset;
 
 	}
 
@@ -226,7 +228,7 @@ public class ShadowBox {
 	 * but means that distant objects wouldn't cast shadows.
 	 */
 	private void calculateWidthsAndHeights(float fov, float nearPlane) {
-		farWidth = (float) (SHADOW_DISTANCE * Math.tan(Math.toRadians(fov)));
+		farWidth = (float) (this.visibleDistance * Math.tan(Math.toRadians(fov)));
 		nearWidth = (float) (nearPlane * Math.tan(Math.toRadians(fov)));
 		farHeight = farWidth / getAspectRatio();
 		nearHeight = nearWidth / getAspectRatio();
@@ -237,6 +239,22 @@ public class ShadowBox {
 	 */
 	private float getAspectRatio() {
 		return (float) Display.getWidth() / (float) Display.getHeight();
+	}
+
+	public float getOffset() {
+		return offset;
+	}
+
+	public void setOffset(float offset) {
+		this.offset = offset;
+	}
+
+	public float getVisibleDistance() {
+		return visibleDistance;
+	}
+
+	public void setVisibleDistance(float visibleDistance) {
+		this.visibleDistance = visibleDistance;
 	}
 
 }

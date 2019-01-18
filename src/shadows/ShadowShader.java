@@ -12,7 +12,7 @@ public class ShadowShader extends ShaderProgram {
 	private int location_mvpMatrix;
 
 	protected ShadowShader() {
-		super(VERTEX_FILE, FRAGMENT_FILE);
+		super(VERTEX_FILE, FRAGMENT_FILE, 0);
 	}
 
 	@Override

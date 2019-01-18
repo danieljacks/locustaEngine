@@ -19,10 +19,12 @@ public abstract class ShaderProgram {
 	private int programID;
 	private int vertexShaderID;
 	private int fragmentShaderID;
+	private int maxLights;
 	
 	private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
 	
-	public ShaderProgram(String vertexFile,String fragmentFile){
+	public ShaderProgram(String vertexFile,String fragmentFile, int maxLights){
+		this.maxLights = maxLights;
 		vertexShaderID = loadShader(vertexFile,GL20.GL_VERTEX_SHADER);
 		fragmentShaderID = loadShader(fragmentFile,GL20.GL_FRAGMENT_SHADER);
 		programID = GL20.glCreateProgram();
@@ -120,6 +122,14 @@ public abstract class ShaderProgram {
 			System.exit(-1);
 		}
 		return shaderID;
+	}
+
+	public int getMaxLights() {
+		return maxLights;
+	}
+
+	public void setMaxLights(int maxLights) {
+		this.maxLights = maxLights;
 	}
 
 }
