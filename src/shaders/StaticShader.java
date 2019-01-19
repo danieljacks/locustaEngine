@@ -25,14 +25,14 @@ public class StaticShader extends ShaderProgram{
 	private int location_attenuation[];
 	private int location_shineDamper;
 	private int location_reflectivity;
-	private int location_useFakeLighting;
 	private int location_skyColour;
 	private int location_numberOfRows;
 	private int location_offset;
 	private int location_plane;
+	private int location_modelTexture;
 	private int location_specularMap;
 	private int location_usesSpecularMap;
-	private int location_modelTexture;
+	private int location_useFakeLighting;
 
 	public StaticShader(int maxLights) {
 		super(VERTEX_FILE, FRAGMENT_FILE, maxLights);
@@ -104,7 +104,7 @@ public class StaticShader extends ShaderProgram{
 		super.loadBoolean(location_useFakeLighting, useFake);
 	}
 	
-	public void loadShineVariables(float damper,float reflectivity){
+	public void loadShineVariables(float damper, float reflectivity){
 		super.loadFloat(location_shineDamper, damper);
 		super.loadFloat(location_reflectivity, reflectivity);
 	}

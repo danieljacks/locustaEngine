@@ -28,9 +28,9 @@ public class NormalMappingShader extends ShaderProgram{
 	private int location_offset;
 	private int location_plane;
 	private int location_modelTexture;
-	private int location_normalMap;
 	private int location_specularMap;
 	private int location_usesSpecularMap;
+	private int location_normalMap;
 
 	public NormalMappingShader(int maxLights) {
 		super(VERTEX_FILE, FRAGMENT_FILE, maxLights);
@@ -100,7 +100,7 @@ public class NormalMappingShader extends ShaderProgram{
 		super.loadVector(location_skyColour, color);
 	}
 	
-	protected void loadShineVariables(float damper,float reflectivity){
+	protected void loadShineVariables(float damper, float reflectivity){
 		super.loadFloat(location_shineDamper, damper);
 		super.loadFloat(location_reflectivity, reflectivity);
 	}
