@@ -92,12 +92,10 @@ public class NormalMappingRenderer {
 		shader.loadOffset(entity.getTextureXOffset(), entity.getTextureYOffset());
 	}
 
-	private void prepare(Vector4f clipPlane, List<Light> lights, ICamera camera, Vector3f color) {
+	private void prepare(Vector4f clipPlane, List<Light> lights, ICamera camera, Vector3f skyColor) {
 		shader.loadClipPlane(clipPlane);
-		// need to be public variables in MasterRenderer
-		shader.loadSkyColour(color);
+		shader.loadSkyColour(skyColor);
 		Matrix4f viewMatrix = Maths.createViewMatrix(camera);
-
 		shader.loadLights(lights, viewMatrix);
 		shader.loadViewMatrix(viewMatrix);
 	}

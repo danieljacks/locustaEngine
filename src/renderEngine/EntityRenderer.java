@@ -8,8 +8,11 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
 import entities.Entity;
+import entities.Light;
 import models.RawModel;
 import models.TexturedModel;
 import shaders.StaticShader;
@@ -21,14 +24,17 @@ public class EntityRenderer {
 
 	private StaticShader shader;
 
-	public EntityRenderer(StaticShader shader,Matrix4f projectionMatrix) {
-		this.shader = shader;
+	public EntityRenderer(Matrix4f projectionMatrix, int maxLights) {
+		this.shader = new StaticShader(maxLights);
 		shader.start();
 		shader.loadProjectionMatrix(projectionMatrix);
 		shader.stop();
 	}
 
-	public void render(Map<TexturedModel, List<Entity>> entities) {
+	public void render(Map<TexturedModel, List<Entity>> entities, Vector4f clipPlane, List<Light> lights,
+			ICamera camera, Vector3f skyColor) {
+		shader.start();
+		prepare(clipPlane, lights, camera, skyColor);
 		for (TexturedModel model : entities.keySet()) {
 			prepareTexturedModel(model);
 			List<Entity> batch = entities.get(model);
@@ -39,6 +45,7 @@ public class EntityRenderer {
 			}
 			unbindTexturedModel();
 		}
+		shader.stop();
 	}
 
 	private void prepareTexturedModel(TexturedModel model) {
@@ -77,5 +84,15 @@ public class EntityRenderer {
 		shader.loadTransformationMatrix(transformationMatrix);
 		shader.loadOffset(entity.getTextureXOffset(), entity.getTextureYOffset());
 	}
+	
+	private void prepare(Vector4f clipPlane, List<Light> lights, ICamera camera, Vector3f skyColor) {
+		shader.loadClipPlane(clipPlane);
+		shader.loadSkyColour(skyColor);
+		shader.loadLights(lights);
+		shader.loadViewMatrix(camera);
+	}
 
+	public void cleanUp() {
+		shader.cleanUp();
+	}
 }
