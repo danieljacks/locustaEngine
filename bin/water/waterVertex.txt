@@ -11,7 +11,6 @@ uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
 uniform vec3 lightPosition;
-
 uniform vec3 cameraPosition;
 
 const float tiling = 4.0;

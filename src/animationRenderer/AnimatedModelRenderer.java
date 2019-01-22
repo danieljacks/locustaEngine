@@ -45,8 +45,8 @@ public class AnimatedModelRenderer {
 	 * @param lightDir
 	 *            - the direction of the light in the scene.
 	 */
-	public void render(List<AnimatedEntity> entities, ICamera camera, Vector3f lightDir, Fog fog, Sky sky) {
-		prepare(camera, lightDir, fog, sky);
+	public void render(List<AnimatedEntity> entities, ICamera camera, Vector3f lightDir, Fog fog, Vector3f skyColor) {
+		prepare(camera, lightDir, fog, skyColor);
 		for (AnimatedEntity entity : entities) {
 		entity.getSkin().getDiffuseTexture().bindToUnit(0);
 		entity.getModel().getVao().bind(0, 1, 2, 3, 4);
@@ -74,9 +74,9 @@ public class AnimatedModelRenderer {
 	 * @param lightDir
 	 *            - the direction of the light in the scene.
 	 */
-	private void prepare(ICamera camera, Vector3f lightDir, Fog fog, Sky sky) {
+	private void prepare(ICamera camera, Vector3f lightDir, Fog fog, Vector3f skyColor) {
 		shader.start();
-		shader.skyColour.loadVec3(sky.getColour());
+		shader.skyColour.loadVec3(skyColor);
 		shader.fogDensity.loadFloat(fog.getDensity());
 		shader.fogGradient.loadFloat(fog.getGradient());
 		shader.projectionViewMatrix.loadMatrix(camera.getProjectionViewMatrix());

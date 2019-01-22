@@ -2,34 +2,40 @@ package renderEngine;
 
 import java.util.List;
 
-import models.RawModel;
-
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
+import org.lwjgl.util.vector.Vector4f;
 
+import entities.Fog;
+import entities.Light;
+import models.RawModel;
+import scene.Shadow;
 import shaders.TerrainShader;
 import terrains.Terrain;
-import textures.ModelTexture;
 import textures.TerrainTexturePack;
+import toolbox.ICamera;
 import toolbox.Maths;
 
 public class TerrainRenderer {
 
 	private TerrainShader shader;
 
-	public TerrainRenderer(TerrainShader shader, Matrix4f projectionMatrix) {
-		this.shader = shader;
+	public TerrainRenderer(Matrix4f projectionMatrix, int maxLights) {
+		this.shader = new TerrainShader(maxLights);
 		shader.start();
 		shader.loadProjectionMatrix(projectionMatrix);
 		shader.connectTextureUnits();
 		shader.stop();
 	}
 
-	public void render(List<Terrain> terrains, Matrix4f toShadowSpace) {
+	public void render(List<Terrain> terrains, Matrix4f toShadowSpace, Vector4f clipPlane, List<Light> lights,
+			ICamera camera, Vector3f skyColor, Fog fog, Shadow shadow) {
+		shader.start();
+		prepare(clipPlane, lights, camera, skyColor, fog, shadow);
 		shader.loadToShadowSpaceMatrix(toShadowSpace);
 		for (Terrain terrain : terrains) {
 			prepareTerrain(terrain);
@@ -38,6 +44,7 @@ public class TerrainRenderer {
 					GL11.GL_UNSIGNED_INT, 0);
 			unbindTexturedModel();
 		}
+		shader.stop();
 	}
 
 	private void prepareTerrain(Terrain terrain) {
@@ -76,5 +83,17 @@ public class TerrainRenderer {
 				new Vector3f(terrain.getX(), 0, terrain.getZ()), 0, 0, 0, 1);
 		shader.loadTransformationMatrix(transformationMatrix);
 	}
-
+	
+	private void prepare(Vector4f clipPlane, List<Light> lights, ICamera camera, Vector3f skyColor, Fog fog, Shadow shadow) {
+		shader.loadClipPlane(clipPlane);
+		shader.loadSkyColour(skyColor);
+		shader.loadLights(lights);
+		shader.loadViewMatrix(camera);
+		shader.loadFog(fog.getDensity(), fog.getGradient());
+		shader.loadShadow(shadow.getShadowDistance(), shadow.getTransitionDistance());
+	}
+	
+	public void cleanUp() {
+		shader.cleanUp();
+	}
 }

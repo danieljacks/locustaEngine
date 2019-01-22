@@ -27,6 +27,7 @@ public class Scene {
 	private Sky sky;
 	private FlareManager flare;
 	private Fog fog;
+	private Shadow shadow;
 	
 	private float gravity;
 	
@@ -144,5 +145,11 @@ public class Scene {
 	}
 	public void setGravity(float gravity) {
 		this.gravity = gravity;
+	}
+	public Shadow getShadow() {
+		return shadow;
+	}
+	public void setShadow(Shadow shadow) {
+		this.shadow = shadow;
 	}
 }

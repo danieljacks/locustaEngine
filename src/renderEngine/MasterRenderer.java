@@ -20,13 +20,10 @@ import environmentMapRenderer.EnviroMapRenderer;
 import models.TexturedModel;
 import normalMappingRenderer.NormalMappingRenderer;
 import scene.Scene;
-import shaders.StaticShader;
-import shaders.TerrainShader;
+import scene.Shadow;
 import shadows.ShadowMapMasterRenderer;
 import shinyEntities.ShinyEntity;
 import shinyEntities.ShinyRenderer;
-import shinyEntities.ShinyShader;
-import skybox.Skybox;
 import skybox.SkyboxRenderer;
 import sunRenderer.SunRenderer;
 import toolbox.ICamera;
@@ -34,7 +31,7 @@ import toolbox.ICamera;
 public class MasterRenderer {
 
 	private static final Vector4f NO_CLIP = new Vector4f(0, 0, 0, 1);
-	
+
 	private int maxLights;
 
 	private Matrix4f projectionMatrix;
@@ -43,27 +40,23 @@ public class MasterRenderer {
 
 	private EntityRenderer staticRenderer;
 	private ShinyRenderer shinyRenderer;
-	private ShinyShader shinyShader;
 	private TerrainRenderer terrainRenderer;
-	private TerrainShader terrainShader;
 	private NormalMappingRenderer normalMapRenderer;
 	private SkyboxRenderer skyboxRenderer;
 	private ShadowMapMasterRenderer shadowMapRenderer;
 	private SunRenderer sunRenderer;
 	private AnimatedModelRenderer animatedRenderer;
 
-	public MasterRenderer(Loader loader, Camera camera, int maxLights) {
+	public MasterRenderer(Loader loader, Camera camera, int maxLights, Shadow shadow) {
 		this.maxLights = maxLights;
-		terrainShader = new TerrainShader(maxLights);
-		shinyShader = new ShinyShader();
 		enableCulling();
 		createProjectionMatrix(camera.getFov(), camera.getNearPlane(), camera.getFarPlane());
 		staticRenderer = new EntityRenderer(projectionMatrix, maxLights);
-		terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
+		terrainRenderer = new TerrainRenderer(projectionMatrix, maxLights);
 		skyboxRenderer = new SkyboxRenderer(loader, projectionMatrix, 1200);
 		normalMapRenderer = new NormalMappingRenderer(projectionMatrix, maxLights);
-		shadowMapRenderer = new ShadowMapMasterRenderer(camera, 100, 300, 4096); //TODO: remove hardcoded
-		shinyRenderer = new ShinyRenderer(projectionMatrix, new Skybox(loader, 1200));
+		shadowMapRenderer = new ShadowMapMasterRenderer(camera, shadow.getOffset(), shadow.getShadowDistance(), shadow.getQuality());
+		shinyRenderer = new ShinyRenderer(projectionMatrix, skyboxRenderer.skybox);
 		sunRenderer = new SunRenderer(loader);
 		animatedRenderer = new AnimatedModelRenderer();
 	}
@@ -90,39 +83,33 @@ public class MasterRenderer {
 			processNormalMapEntity(entity);
 		}
 		prepare(scene.getSky().getColour());
-		staticRenderer.render(entityBatch, NO_CLIP, scene.getLights(), cubeMapCamera, scene.getSky().getColour());
-		normalMapRenderer.render(normalMapEntityBatch, NO_CLIP, scene.getLights(), cubeMapCamera, scene.getSky().getColour());
-		terrainShader.start();
-		terrainShader.loadClipPlane(NO_CLIP);
-		terrainShader.loadSkyColour(scene.getSky().getColour());
-		terrainShader.loadLights(scene.getLights());
-		terrainShader.loadViewMatrix(cubeMapCamera);
-		terrainRenderer.render(scene.getTerrains(), shadowMapRenderer.getToShadowMapSpaceMatrix());
-		terrainShader.stop();
-		shinyShader.loadViewMatrix(cubeMapCamera);
-		shinyRenderer.render(scene.getShinyEntities(), cubeMapCamera);
+		staticRenderer.render(entityBatch, NO_CLIP, scene.getLights(), cubeMapCamera, scene.getSky().getColour(), scene.getFog());
+		normalMapRenderer.render(normalMapEntityBatch, NO_CLIP, scene.getLights(), cubeMapCamera,
+				scene.getSky().getColour(), scene.getFog());
+
+		terrainRenderer.render(scene.getTerrains(), shadowMapRenderer.getToShadowMapSpaceMatrix(), NO_CLIP,
+				scene.getLights(), cubeMapCamera, scene.getSky().getColour(), scene.getFog(), scene.getShadow());
+		//shinyRenderer.render(scene.getShinyEntities(), cubeMapCamera);
 		skyboxRenderer.render(cubeMapCamera, new Vector3f(scene.getSky().getColour()));
-		sunRenderer.render(scene.getSky().getSuns(),scene.getCamera());
+		sunRenderer.render(scene.getSky().getSuns(), scene.getCamera());
+		animatedRenderer.render(scene.getAnimatedEntities(), scene.getCamera(),
+				scene.getSky().getSuns().get(0).getLightDirection(), scene.getFog(), scene.getSky().getColour());
 		entityBatch.clear();
 		normalMapEntityBatch.clear();
 	}
 
 	public void render(Scene scene, Vector4f clipPlane) {
 		prepare(scene.getSky().getColour());
-		staticRenderer.render(entityBatch, clipPlane, scene.getLights(), scene.getCamera(), scene.getSky().getColour());
-		normalMapRenderer.render(normalMapEntityBatch, clipPlane, scene.getLights(), scene.getCamera(), scene.getSky().getColour());
-		terrainShader.start();
-		terrainShader.loadClipPlane(clipPlane);
-		terrainShader.loadSkyColour(scene.getSky().getColour());
-		terrainShader.loadLights(scene.getLights());
-		terrainShader.loadViewMatrix(scene.getCamera());
-		terrainRenderer.render(scene.getTerrains(), shadowMapRenderer.getToShadowMapSpaceMatrix());
-		terrainShader.stop();
-		shinyShader.loadViewMatrix(scene.getCamera());
+		staticRenderer.render(entityBatch, clipPlane, scene.getLights(), scene.getCamera(), scene.getSky().getColour(), scene.getFog());
+		normalMapRenderer.render(normalMapEntityBatch, clipPlane, scene.getLights(), scene.getCamera(),
+				scene.getSky().getColour(), scene.getFog());
+		terrainRenderer.render(scene.getTerrains(), shadowMapRenderer.getToShadowMapSpaceMatrix(), clipPlane,
+				scene.getLights(), scene.getCamera(), scene.getSky().getColour(), scene.getFog(), scene.getShadow());
 		shinyRenderer.render(scene.getShinyEntities(), scene.getCamera());
 		skyboxRenderer.render(scene.getCamera(), scene.getSky().getColour());
-		sunRenderer.render(scene.getSky().getSuns(),scene.getCamera());
-		animatedRenderer.render(scene.getAnimatedEntities(), scene.getCamera(), scene.getSky().getSuns().get(0).getLightDirection(), scene.getFog(), scene.getSky());
+		sunRenderer.render(scene.getSky().getSuns(), scene.getCamera());
+		animatedRenderer.render(scene.getAnimatedEntities(), scene.getCamera(),
+				scene.getSky().getSuns().get(0).getLightDirection(), scene.getFog(), scene.getSky().getColour());
 		entityBatch.clear();
 		normalMapEntityBatch.clear();
 	}
@@ -138,15 +125,15 @@ public class MasterRenderer {
 
 	public void processEntity(Entity entity) {
 
-			TexturedModel entityModel = entity.getModel();
-			List<Entity> batch = entityBatch.get(entityModel);
-			if (batch != null) {
-				batch.add(entity);
-			} else {
-				List<Entity> newBatch = new ArrayList<Entity>();
-				newBatch.add(entity);
-				entityBatch.put(entityModel, newBatch);
-			}
+		TexturedModel entityModel = entity.getModel();
+		List<Entity> batch = entityBatch.get(entityModel);
+		if (batch != null) {
+			batch.add(entity);
+		} else {
+			List<Entity> newBatch = new ArrayList<Entity>();
+			newBatch.add(entity);
+			entityBatch.put(entityModel, newBatch);
+		}
 
 	}
 
@@ -180,7 +167,7 @@ public class MasterRenderer {
 
 	public void cleanUp() {
 		staticRenderer.cleanUp();
-		terrainShader.cleanUp();
+		terrainRenderer.cleanUp();
 		normalMapRenderer.cleanUp();
 		shadowMapRenderer.cleanUp();
 		shinyRenderer.cleanUp();
@@ -210,8 +197,8 @@ public class MasterRenderer {
 		projectionMatrix.m32 = -((2 * nearPlane * farPlane) / frustum_length);
 		projectionMatrix.m33 = 0;
 	}
-	
-	public void renderEnvironmentMap(Scene scene, ShinyEntity entity){
+
+	public void renderEnvironmentMap(Scene scene, ShinyEntity entity) {
 		EnviroMapRenderer.renderEnvironmentMap(scene, entity, this);
 	}
 

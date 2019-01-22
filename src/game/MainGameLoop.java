@@ -43,6 +43,7 @@ import renderEngine.Loader;
 import renderEngine.MasterRenderer;
 import renderEngine.OBJLoader;
 import scene.Scene;
+import scene.Shadow;
 import shinyEntities.ShinyEntity;
 import skybox.Skybox;
 import sunRenderer.Sun;
@@ -66,6 +67,11 @@ public class MainGameLoop {
 		
 		Scene scene = new Scene();
 		scene.setGravity(-50f);
+		Shadow shadow = new Shadow();
+		shadow.setShadowDistance(270.0f);
+		shadow.setTransitionDistance(50.0f);
+		shadow.setQuality(4096);
+		scene.setShadow(shadow);
 		RawModel bunnyModel = OBJLoader.loadObjModel("person", loader);
 		RawModel teaModel = OBJLoader.loadObjModel("tea", loader);
 		TexturedModel teapot = new TexturedModel(teaModel,
@@ -80,8 +86,8 @@ public class MainGameLoop {
 		TexturedModel stanfordBunny = new TexturedModel(bunnyModel,
 				new ModelTexture(loader.loadTexture("playerTexture")));
 		Player player = new Player(stanfordBunny, new Vector3f(75, 5, -75), 0, 100, 0, 0.6f, 40, 160, scene.getGravity(), 18);
-		Camera camera = new Camera(player, 60, 0.1f, 1600);
-		MasterRenderer renderer = new MasterRenderer(loader, camera, 8);
+		Camera camera = new Camera(player, 60, 0.1f, 5000);
+		MasterRenderer renderer = new MasterRenderer(loader, camera, 4, scene.getShadow());
 		TextMaster.init(loader);
 		ParticleMaster.init(loader, renderer.getProjectionMatrix());
 		
@@ -207,7 +213,7 @@ public class MainGameLoop {
 					entities.add(new Entity(pine, 1, new Vector3f(x, y, z), 0, random.nextFloat() * 360, 0,
 							random.nextFloat() * 2f + 4f));
 				}else if(i%7==0) {
-					entities.add(new Entity(rock, 1, new Vector3f(x, y, z), random.nextFloat() * 360, random.nextFloat() * 360, random.nextFloat() * 360, 1.0f));
+					normalMapEntities.add(new Entity(boulderModel, 1, new Vector3f(x, y, z), random.nextFloat() * 360, random.nextFloat() * 360, random.nextFloat() * 360, 1.0f));
 				}else if (i % 13 == 0) {
 					entities.add(new Entity(lantern, 1, new Vector3f(x, y, z), 0, random.nextFloat() * 360, 0,
 							random.nextFloat() + 1f));
@@ -292,10 +298,10 @@ public class MainGameLoop {
 		Animation animation = AnimationLoader.loadAnimation(new MyFile("res", "villager.dae"));
 		guy.doAnimation(animation);
 		
-		Fog fog = new Fog(0.003f, 0.1f);
+		Fog fog = new Fog(0.003f, 6.0f);
 		Sky sky = new Sky();
 		sky.setColour(new Vector3f(0.83f, 0.9f, 0.92f));
-		sky.setSkybox(new Skybox(loader, 1200));
+		sky.setSkybox(new Skybox(loader, 2048));
 		sky.setSuns(suns);
 		scene.setCamera(camera);
 		scene.setEntities(entities);
@@ -308,7 +314,6 @@ public class MainGameLoop {
 		scene.addAnimatedEntity(guy);
 		scene.setFog(fog);
 		
-
 		// ****************Game Loop Below*********************
 
 		while (!Display.isCloseRequested()) {
