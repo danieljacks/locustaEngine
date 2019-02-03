@@ -33,7 +33,7 @@ public class Camera implements ICamera{
 		this.projectionMatrix = createProjectionMatrix(fov, nearPlane, farPlane);
 	}
 	
-	public void move(){
+	private void move(){
 		calculateZoom();
 		calculatePitch();
 		calculateAngleAroundPlayer();
@@ -179,5 +179,8 @@ public class Camera implements ICamera{
 		projectionMatrix.m32 = -((2 * nearPlane * farPlane) / frustum_length);
 		projectionMatrix.m33 = 0;
 		return projectionMatrix;
+	}
+	public void update(){
+		move();
 	}
 }

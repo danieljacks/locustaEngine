@@ -17,7 +17,7 @@ public class SkyboxRenderer {
 	
 	public Skybox skybox;
 	private SkyboxShader shader;
-	private float time =0;
+	private float time = 0f;
 	
 	public SkyboxRenderer(Loader loader, Matrix4f projectionMatrix, float boxSize){
 		skybox = new Skybox(loader, boxSize);
@@ -48,7 +48,7 @@ public class SkyboxRenderer {
 	}
 	
 	private void bindTextures(){
-		time += DisplayManager.getFrameTime() * 200;
+		time += DisplayManager.getFrameTime() * 50; //frametime multiplier decrases time between texture change
 		time %= 24000;
 		int texture1;
 		int texture2;

@@ -4,14 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import animationRenderer.AnimatedEntity;
+import entities.Camera;
 import entities.Entity;
 import entities.Fog;
 import entities.Light;
+import entities.Player;
 import entities.Sky;
+import guis.GuiTexture;
 import lensFlare.FlareManager;
 import shinyEntities.ShinyEntity;
 import terrains.Terrain;
-import toolbox.ICamera;
 import water.WaterTile;
 
 public class Scene {
@@ -22,12 +24,14 @@ public class Scene {
 	private List<WaterTile> waterTiles = new ArrayList<WaterTile>();
 	private List<Light> lights = new ArrayList<Light>();
 	private List<AnimatedEntity> animatedEntities = new ArrayList<AnimatedEntity>();
+	private List<GuiTexture> guiTextures = new ArrayList<GuiTexture>();
 	
-	private ICamera camera;
+	private Camera camera;
 	private Sky sky;
 	private FlareManager flare;
 	private Fog fog;
 	private Shadow shadow;
+	private Player player;
 	
 	private float gravity;
 	
@@ -79,10 +83,10 @@ public class Scene {
 	public void removeShinyEntityEntity(ShinyEntity entity){
 		shinyEntities.remove(entity);
 	}
-	public ICamera getCamera() {
+	public Camera getCamera() {
 		return camera;
 	}
-	public void setCamera(ICamera camera) {
+	public void setCamera(Camera camera) {
 		this.camera = camera;
 	}
 	public Sky getSky() {
@@ -151,5 +155,26 @@ public class Scene {
 	}
 	public void setShadow(Shadow shadow) {
 		this.shadow = shadow;
+	}
+	
+	public List<GuiTexture> getGuiTextures() {
+		return guiTextures;
+	}
+	public void setGuiTextures(List<GuiTexture> guiTextures) {
+		this.guiTextures = guiTextures;
+	}
+	public void addGuiTexture(GuiTexture guiTexture){
+		guiTextures.add(guiTexture);
+	}
+	public void removeGuiTexture(GuiTexture guiTexture){
+		guiTextures.remove(guiTexture);
+	}
+	public Player getPlayer() {
+		return player;
+	}
+	public void setPlayer(Player player) {
+		entities.remove(this.player);
+		entities.add(player);
+		this.player = player;
 	}
 }

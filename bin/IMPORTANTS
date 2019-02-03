@@ -1,0 +1,12 @@
+@ThinMatrix  I'm sure you know this, but the transformation matrix doesn't need to be calculated every frame, 
+unless the water is moving for some reason. The same goes for terrains, guis, and entities that do not move. 
+Using VisualVM I profiled my game, and creating transformation matrices was actually taking a significant amount of processing power. 
+Creating them in the constructor helped reduce the time needed to render everything, and it hardly took any time to implement.
+
+One thing I didn't mention: if you want to make deeper water look murky then you can add something like this into the fragment shader:
+refractColour = mix(refractColour, murkyWaterColour, clamp(waterDepth/60.0, 0.0, 1.0));
+
+TODO:
+1. Fog on water
+2. Murky water
+3. Normal map and static entity into one list

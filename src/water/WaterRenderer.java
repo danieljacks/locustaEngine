@@ -2,8 +2,6 @@ package water;
 
 import java.util.List;
 
-import models.RawModel;
-
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
@@ -11,11 +9,13 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector3f;
 
+import entities.Camera;
+import entities.Fog;
+import entities.Light;
+import models.RawModel;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import toolbox.Maths;
-import entities.Camera;
-import entities.Light;
 
 public class WaterRenderer {
 	
@@ -44,8 +44,8 @@ public class WaterRenderer {
 		setUpVAO(loader);
 	}
 
-	public void render(List<WaterTile> water, Camera camera, Light sun) {
-		prepareRender(camera, sun);	
+	public void render(List<WaterTile> water, Camera camera, Light sun, Vector3f skyColor, Fog fog) {
+		prepareRender(camera, sun, skyColor, fog);	
 		for (WaterTile tile : water) {
 			Matrix4f modelMatrix = Maths.createTransformationMatrix(
 					new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0,
@@ -56,13 +56,15 @@ public class WaterRenderer {
 		unbind();
 	}
 	
-	private void prepareRender(Camera camera, Light sun){
+	private void prepareRender(Camera camera, Light sun, Vector3f skyColor, Fog fog){
 		shader.start();
 		shader.loadViewMatrix(camera);
 		moveFactor += WAVE_SPEED * DisplayManager.getFrameTime();
 		moveFactor %= 1;
 		shader.loadMoveFactor(moveFactor);
 		shader.loadLight(sun);
+		shader.loadSkyColour(skyColor);
+		shader.loadFog(fog.getDensity(), fog.getGradient());
 		GL30.glBindVertexArray(quad.getVaoID());
 		GL20.glEnableVertexAttribArray(0);
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);

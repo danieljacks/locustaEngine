@@ -6,6 +6,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector3f;
 
 import renderEngine.DisplayManager;
+import scene.Scene;
 import terrains.Terrain;
 
 public class Player extends Entity {
@@ -106,6 +107,11 @@ public class Player extends Entity {
 
 	public void setJumpPower(float jumpPower) {
 		this.jumpPower = jumpPower;
+	}
+	@Override 
+	public void update(Scene scene){
+		//super.update(scene);
+		move(scene.getTerrains().get(0));
 	}
 
 }

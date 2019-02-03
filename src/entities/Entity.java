@@ -1,10 +1,15 @@
 package entities;
 
-import models.TexturedModel;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.util.vector.Vector3f;
 
-public class Entity {
+import models.TexturedModel;
+import scene.Scene;
+import toolbox.Movable;
+
+public class Entity implements Movable {
 
 	private TexturedModel model;
 	private Vector3f position;
@@ -12,11 +17,11 @@ public class Entity {
 	private float scale;
 	private boolean castShadow = true;
 	private boolean important = true;
-	
+	private List<EntityActivity> activities;
+
 	private int textureIndex = 0;
 
-	public Entity(TexturedModel model, Vector3f position, float rotX, float rotY, float rotZ,
-			float scale) {
+	public Entity(TexturedModel model, Vector3f position, float rotX, float rotY, float rotZ, float scale) {
 		this.model = model;
 		this.position = position;
 		this.rotX = rotX;
@@ -24,9 +29,8 @@ public class Entity {
 		this.rotZ = rotZ;
 		this.scale = scale;
 	}
-	
-	public Entity(TexturedModel model, int index, Vector3f position, float rotX, float rotY, float rotZ,
-			float scale) {
+
+	public Entity(TexturedModel model, int index, Vector3f position, float rotX, float rotY, float rotZ, float scale) {
 		this.textureIndex = index;
 		this.model = model;
 		this.position = position;
@@ -35,15 +39,15 @@ public class Entity {
 		this.rotZ = rotZ;
 		this.scale = scale;
 	}
-	
-	public float getTextureXOffset(){
-		int column = textureIndex%model.getTexture().getNumberOfRows();
-		return (float)column/(float)model.getTexture().getNumberOfRows();
+
+	public float getTextureXOffset() {
+		int column = textureIndex % model.getTexture().getNumberOfRows();
+		return (float) column / (float) model.getTexture().getNumberOfRows();
 	}
-	
-	public float getTextureYOffset(){
-		int row = textureIndex/model.getTexture().getNumberOfRows();
-		return (float)row/(float)model.getTexture().getNumberOfRows();
+
+	public float getTextureYOffset() {
+		int row = textureIndex / model.getTexture().getNumberOfRows();
+		return (float) row / (float) model.getTexture().getNumberOfRows();
 	}
 
 	public void increasePosition(float dx, float dy, float dz) {
@@ -122,4 +126,59 @@ public class Entity {
 		this.important = important;
 	}
 
+	@Override
+	public void update(Scene scene) {
+		if(activities != null){
+			for (EntityActivity activity : activities) {
+				switch (activity) {
+				case ROTATE_Y_PLUS:
+					this.increaseRotation(0, 1, 0);
+					break;
+				case ROTATE_Y_MINUS:
+					this.increaseRotation(0, -1, 0);
+					break;
+				case ROTATE_X_PLUS:
+					this.increaseRotation(1, 0, 0);
+					break;
+				case ROTATE_X_MINUS:
+					this.increaseRotation(-1, 0, 0);
+					break;
+				case ROTATE_Z_PLUS:
+					this.increaseRotation(0, 0, 1);
+					break;
+				case ROTATE_Z_MINUS:
+					this.increaseRotation(0, 0, -1);
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
+
+	public List<EntityActivity> getActivities() {
+		if (activities == null) {
+			activities = new ArrayList<EntityActivity>();
+		}
+		return activities;
+	}
+
+	public void setActivities(List<EntityActivity> activities) {
+		this.activities = activities;
+	}
+
+	public void addActivity(EntityActivity activity) {
+		if (activities == null) {
+			activities = new ArrayList<EntityActivity>();
+		}
+		activities.add(activity);
+	}
+
+	public void removeActivity(EntityActivity activity) {
+		if (activities == null) {
+			activities = new ArrayList<EntityActivity>();
+		} else {
+			activities.remove(activity);
+		}
+	}
 }
