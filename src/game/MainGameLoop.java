@@ -108,15 +108,12 @@ public class MainGameLoop {
 		Player player = scene.getPlayer();
 		
 		// ****************Game Loop Below*********************
-		while (!Display.isCloseRequested()) {
+		while (!Keyboard.isKeyDown(Keyboard.KEY_ESCAPE) && !Display.isCloseRequested()) {
 			player.update(scene);
 			scene.getCamera().update();
 			picker.update();
 			for(AnimatedEntity animatedEntity : scene.getAnimatedEntities()){
 				animatedEntity.update();
-			}
-			for(Entity entity : scene.getNormalMapEntities()){
-				entity.update(scene);
 			}
 			for(Entity entity : scene.getEntities()){
 				entity.update(scene);
@@ -135,13 +132,9 @@ public class MainGameLoop {
 			
 			ParticleMaster.update(scene.getCamera());
 
-			//entity.increaseRotation(0, 1, 0);
-			//entity2.increaseRotation(0, 1, 0);
-			//entity3.increaseRotation(0, 1, 0);
-			//shinyDragon.increaseRotation(0, 1, 0);
 			List<Entity> shadowObjects = new ArrayList<>();
 			shadowObjects.addAll(scene.getEntities());
-			shadowObjects.addAll(scene.getNormalMapEntities());
+			//shadowObjects.addAll(scene.getNormalMapEntities());
 			renderer.renderShadowMap(shadowObjects, scene.getLights().get(0));
 			GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 
@@ -177,12 +170,9 @@ public class MainGameLoop {
 			//multisampleFbo.resolveToScreen();
 			PostProcessing.doPostProcessing(outputFbo.getColourTexture(), outputFbo2.getColourTexture());
 			
-			
 			guiRenderer.render(scene.getGuiTextures());
 			TextMaster.render();
-			
-			
-			
+
 			DisplayManager.updateDisplay();
 		}
 

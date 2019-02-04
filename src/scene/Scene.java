@@ -18,7 +18,6 @@ import water.WaterTile;
 
 public class Scene {
 	private List<Entity> entities = new ArrayList<Entity>();
-	private List<Entity> normalMapEntities = new ArrayList<Entity>();
 	private List<Terrain> terrains = new ArrayList<Terrain>();
 	private List<ShinyEntity> shinyEntities = new ArrayList<ShinyEntity>();
 	private List<WaterTile> waterTiles = new ArrayList<WaterTile>();
@@ -46,18 +45,6 @@ public class Scene {
 	}
 	public void removeEntity(Entity entity){
 		entities.remove(entity);
-	}
-	public List<Entity> getNormalMapEntities() {
-		return normalMapEntities;
-	}
-	public void setNormalMapEntities(List<Entity> normalMapEntities) {
-		this.normalMapEntities = normalMapEntities;
-	}
-	public void addNormalMapEntity(Entity entity){
-		normalMapEntities.add(entity);
-	}
-	public void removeNormalMapEntity(Entity entity){
-		normalMapEntities.remove(entity);
 	}
 	public List<Terrain> getTerrains() {
 		return terrains;

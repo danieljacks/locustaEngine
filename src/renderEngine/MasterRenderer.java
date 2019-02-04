@@ -67,20 +67,23 @@ public class MasterRenderer {
 
 	public void renderScene(Scene scene, Vector4f clipPlane) {
 		for (Entity entity : scene.getEntities()) {
-			processEntity(entity);
-		}
-		for (Entity entity : scene.getNormalMapEntities()) {
-			processNormalMapEntity(entity);
+			if(entity.getModel().getTexture().isHasNormalMap()){
+				processNormalMapEntity(entity);
+			}else{
+				processEntity(entity);
+			}
 		}
 		render(scene, clipPlane);
 	}
 
 	public void renderLowQualityScene(Scene scene, ICamera cubeMapCamera) {
 		for (Entity entity : scene.getEntities()) {
-			processEntity(entity);
-		}
-		for (Entity entity : scene.getNormalMapEntities()) {
-			processNormalMapEntity(entity);
+			if(entity.getModel().getTexture().isHasNormalMap()){
+				processNormalMapEntity(entity);
+			}else{
+				processEntity(entity);
+			}
+			
 		}
 		prepare(scene.getSky().getColour());
 		staticRenderer.render(entityBatch, NO_CLIP, scene.getLights(), cubeMapCamera, scene.getSky().getColour(), scene.getFog());
@@ -89,7 +92,6 @@ public class MasterRenderer {
 
 		terrainRenderer.render(scene.getTerrains(), shadowMapRenderer.getToShadowMapSpaceMatrix(), NO_CLIP,
 				scene.getLights(), cubeMapCamera, scene.getSky().getColour(), scene.getFog(), scene.getShadow());
-		//shinyRenderer.render(scene.getShinyEntities(), cubeMapCamera);
 		skyboxRenderer.render(cubeMapCamera, new Vector3f(scene.getSky().getColour()));
 		sunRenderer.render(scene.getSky().getSuns(), scene.getCamera());
 		animatedRenderer.render(scene.getAnimatedEntities(), scene.getCamera(),

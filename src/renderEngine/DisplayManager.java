@@ -12,7 +12,7 @@ import org.lwjgl.opengl.PixelFormat;
 public class DisplayManager {
 	
 	private static final int WIDTH = 1280;
-	private static final int HEIGHT = 720;
+	private static final int HEIGHT = 800;
 	private static final int FPS_CAP = 60;
 	
 	private static long lastFrameTime;
@@ -24,7 +24,8 @@ public class DisplayManager {
 		.withProfileCore(true);
 		
 		try {
-			Display.setDisplayMode(new DisplayMode(WIDTH,HEIGHT));
+			//Display.setDisplayMode(new DisplayMode(WIDTH,HEIGHT));
+			Display.setDisplayModeAndFullscreen(Display.getDesktopDisplayMode());
 			Display.create(new PixelFormat().withDepthBits(24), attribs);
 			//Display.create(new PixelFormat(), attribs);
 			Display.setTitle("Locusta");

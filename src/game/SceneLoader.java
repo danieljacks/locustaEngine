@@ -123,7 +123,6 @@ public class SceneLoader {
 		lamp.getTexture().setUseFakeLighting(true);
 
 		List<Entity> entities = new ArrayList<Entity>();
-		List<Entity> normalMapEntities = new ArrayList<Entity>();
 
 		// ******************NORMAL MAP MODELS************************
 
@@ -162,9 +161,9 @@ public class SceneLoader {
 		Entity entity = new Entity(barrelModel, new Vector3f(75, 10, -75), 0, 0, 0, 1f);
 		Entity entity2 = new Entity(boulderModel, new Vector3f(85, 10, -75), 0, 0, 0, 1f);
 		Entity entity3 = new Entity(crateModel, new Vector3f(65, 10, -75), 0, 0, 0, 0.04f);
-		normalMapEntities.add(entity);
-		normalMapEntities.add(entity2);
-		normalMapEntities.add(entity3);
+		entities.add(entity);
+		entities.add(entity2);
+		entities.add(entity3);
 		entity.addActivity(EntityActivity.ROTATE_Z_PLUS);
 		entity3.addActivity(EntityActivity.ROTATE_X_PLUS);
 		entity2.addActivity(EntityActivity.ROTATE_Y_MINUS);
@@ -183,7 +182,7 @@ public class SceneLoader {
 					entities.add(new Entity(pine, 1, new Vector3f(x, y, z), 0, random.nextFloat() * 360, 0,
 							random.nextFloat() * 2f + 4f));
 				} else if (i % 7 == 0) {
-					normalMapEntities.add(new Entity(boulderModel, 1, new Vector3f(x, y, z), random.nextFloat() * 360,
+					entities.add(new Entity(boulderModel, 1, new Vector3f(x, y, z), random.nextFloat() * 360,
 							random.nextFloat() * 360, random.nextFloat() * 360, 1.0f));
 				} else if (i % 13 == 0) {
 					entities.add(new Entity(lantern, 1, new Vector3f(x, y, z), 0, random.nextFloat() * 360, 0,
@@ -253,7 +252,6 @@ public class SceneLoader {
 		sky.setSuns(suns);
 		scene.setCamera(camera);
 		scene.setEntities(entities);
-		scene.setNormalMapEntities(normalMapEntities);
 		scene.setShinyEntities(shinies);
 		scene.setSky(sky);
 		scene.setTerrains(terrains);
