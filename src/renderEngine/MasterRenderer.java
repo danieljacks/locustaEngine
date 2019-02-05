@@ -83,7 +83,6 @@ public class MasterRenderer {
 			}else{
 				processEntity(entity);
 			}
-			
 		}
 		prepare(scene.getSky().getColour());
 		staticRenderer.render(entityBatch, NO_CLIP, scene.getLights(), cubeMapCamera, scene.getSky().getColour(), scene.getFog());
@@ -98,6 +97,14 @@ public class MasterRenderer {
 				scene.getSky().getSuns().get(0).getLightDirection(), scene.getFog(), scene.getSky().getColour());
 		entityBatch.clear();
 		normalMapEntityBatch.clear();
+	}
+	
+	public void renderShadowMap(List<Entity> entityList, Light sun) {
+		for (Entity entity : entityList) {
+			processEntity(entity);
+		}
+		shadowMapRenderer.render(entityBatch, sun);
+		entityBatch.clear();
 	}
 
 	public void render(Scene scene, Vector4f clipPlane) {
@@ -149,18 +156,6 @@ public class MasterRenderer {
 			newBatch.add(entity);
 			normalMapEntityBatch.put(entityModel, newBatch);
 		}
-	}
-
-	public void renderShadowMap(List<Entity> entityList, Light sun) {// TODO:
-																		// all
-																		// entities
-																		// to
-																		// shadowmap
-		for (Entity entity : entityList) {
-			processEntity(entity);
-		}
-		shadowMapRenderer.render(entityBatch, sun);
-		entityBatch.clear();
 	}
 
 	public int getShadowMapTexture() {

@@ -245,7 +245,7 @@ public class SceneLoader {
 		Animation animation = AnimationLoader.loadAnimation(new MyFile("res", "villager.dae"));
 		guy.doAnimation(animation);
 
-		Fog fog = new Fog(0.003f, 6.0f);
+		Fog fog = new Fog(0.007f, 1.5f);
 		Sky sky = new Sky();
 		sky.setColour(new Vector3f(0.83f, 0.9f, 0.92f));
 		sky.setSkybox(new Skybox(loader, 2048));
