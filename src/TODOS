@@ -1,0 +1,1 @@
+1. Create dynamic size array of lights by setting big array size in shader and send one extra uniform - a size of lights list to know how many array positions are not empty.

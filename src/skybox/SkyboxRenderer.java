@@ -15,12 +15,12 @@ import toolbox.OpenGlUtils;
 
 public class SkyboxRenderer {
 	
-	public Skybox skybox;
+	private Skybox skybox;
 	private SkyboxShader shader;
 	private float time = 0f;
 	
-	public SkyboxRenderer(Loader loader, Matrix4f projectionMatrix, float boxSize){
-		skybox = new Skybox(loader, boxSize);
+	public SkyboxRenderer(Loader loader, Matrix4f projectionMatrix, Skybox skybox){
+		this.skybox = skybox;
 		shader = new SkyboxShader();
 		shader.start();
 		shader.connectTextureUnits();

@@ -24,6 +24,7 @@ import scene.Shadow;
 import shadows.ShadowMapMasterRenderer;
 import shinyEntities.ShinyEntity;
 import shinyEntities.ShinyRenderer;
+import skybox.Skybox;
 import skybox.SkyboxRenderer;
 import sunRenderer.SunRenderer;
 import toolbox.ICamera;
@@ -47,16 +48,16 @@ public class MasterRenderer {
 	private SunRenderer sunRenderer;
 	private AnimatedModelRenderer animatedRenderer;
 
-	public MasterRenderer(Loader loader, Camera camera, int maxLights, Shadow shadow) {
+	public MasterRenderer(Loader loader, Camera camera, int maxLights, Shadow shadow, Skybox skybox) {
 		this.maxLights = maxLights;
 		enableCulling();
 		createProjectionMatrix(camera.getFov(), camera.getNearPlane(), camera.getFarPlane());
 		staticRenderer = new EntityRenderer(projectionMatrix, maxLights);
 		terrainRenderer = new TerrainRenderer(projectionMatrix, maxLights);
-		skyboxRenderer = new SkyboxRenderer(loader, projectionMatrix, 1200);
+		skyboxRenderer = new SkyboxRenderer(loader, projectionMatrix, skybox);
 		normalMapRenderer = new NormalMappingRenderer(projectionMatrix, maxLights);
 		shadowMapRenderer = new ShadowMapMasterRenderer(camera, shadow.getOffset(), shadow.getShadowDistance(), shadow.getQuality());
-		shinyRenderer = new ShinyRenderer(projectionMatrix, skyboxRenderer.skybox);
+		shinyRenderer = new ShinyRenderer(projectionMatrix, skybox);
 		sunRenderer = new SunRenderer(loader);
 		animatedRenderer = new AnimatedModelRenderer();
 	}

@@ -68,7 +68,7 @@ public class MainGameLoop {
 		SceneLoader sceneLoader = new SceneLoader();
 		Scene scene = sceneLoader.loadForestScene(loader);
 		
-		MasterRenderer renderer = new MasterRenderer(loader, scene.getCamera(), 4, scene.getShadow());
+		MasterRenderer renderer = new MasterRenderer(loader, scene.getCamera(), 4, scene.getShadow(), scene.getSky().getSkybox());
 		TextMaster.init(loader);
 		ParticleMaster.init(loader, renderer.getProjectionMatrix());
 		FontType font = new FontType(loader.loadFontTexture("candara"), "candara");
