@@ -46,9 +46,9 @@ public class SceneLoader {
 
 	public Scene loadForestScene(Loader loader) {
 		Scene scene = new Scene();
-		scene.setGravity(-50f);
+		scene.setGravity(-20f);
 		Shadow shadow = new Shadow();
-		shadow.setShadowDistance(270.0f);
+		shadow.setShadowDistance(300.0f);
 		shadow.setTransitionDistance(50.0f);
 		shadow.setQuality(4096);
 		scene.setShadow(shadow);
@@ -78,8 +78,8 @@ public class SceneLoader {
 
 		// *****************************************
 
-		TexturedModel rocks = new TexturedModel(OBJFileLoader.loadOBJ("rocks", loader),
-				new ModelTexture(loader.loadTexture("rocks")));
+		//TexturedModel rocks = new TexturedModel(OBJFileLoader.loadOBJ("rocks", loader),
+				//new ModelTexture(loader.loadTexture("rocks")));
 
 		TexturedModel cherry = new TexturedModel(OBJFileLoader.loadOBJ("cherry", loader),
 				new ModelTexture(loader.loadTexture("cherry")));
@@ -114,7 +114,8 @@ public class SceneLoader {
 
 		fern.getTexture().setHasTransparency(true);
 
-		Terrain terrain = new Terrain(0, -1, loader, texturePack, blendMap, "heightmap");
+		//Terrain terrain = new Terrain(0, -1, loader, texturePack, blendMap, "heightmap", 5000);
+		Terrain terrain = new Terrain(0, -1, loader, texturePack, blendMap, 3000, 256, "boby");
 		List<Terrain> terrains = new ArrayList<Terrain>();
 		terrains.add(terrain);
 
@@ -148,13 +149,8 @@ public class SceneLoader {
 		// **********Water Renderer Set-up************************
 
 		List<WaterTile> waters = new ArrayList<WaterTile>();
-		WaterTile water = new WaterTile(-10, 75, -75, 500);
+		WaterTile water = new WaterTile(-10, 0, -1, 5000);
 		waters.add(water);
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 5; j++) {
-				// waters.add(new WaterTile(i*160, -j*160, 0));
-			}
-		}
 
 		// ************ENTITIES*******************
 
@@ -170,9 +166,9 @@ public class SceneLoader {
 		entity2.addActivity(EntityActivity.ROTATE_X_MINUS);
 
 		Random random = new Random(5666778);
-		for (int i = 0; i < 900; i++) {
-			float x = random.nextFloat() * 1000;
-			float z = random.nextFloat() * -1000;
+		for (int i = 0; i < 1000; i++) {
+			float x = random.nextFloat() * terrain.getSize();
+			float z = random.nextFloat() * -terrain.getSize();
 			float y = terrain.getHeightOfTerrain(x, z);
 			if (y >= water.getHeight()) {
 				if (i % 3 == 0) {
@@ -195,7 +191,7 @@ public class SceneLoader {
 				i--;
 			}
 		}
-		entities.add(new Entity(rocks, new Vector3f(75, 4.6f, -75), 0, 0, 0, 75));
+		//entities.add(new Entity(rocks, new Vector3f(75, 4.6f, -75), 0, 0, 0, 75));
 
 		// *******************Shiny entities***************
 
@@ -245,7 +241,7 @@ public class SceneLoader {
 		Animation animation = AnimationLoader.loadAnimation(new MyFile("res", "villager.dae"));
 		guy.doAnimation(animation);
 
-		Fog fog = new Fog(0.007f, 1.5f);
+		Fog fog = new Fog(0.001f, 6f);
 		Sky sky = new Sky();
 		sky.setColour(new Vector3f(0.83f, 0.9f, 0.92f));
 		sky.setSkybox(new Skybox(loader, 2048));

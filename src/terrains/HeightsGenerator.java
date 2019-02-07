@@ -1,5 +1,8 @@
 package terrains;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
 public class HeightsGenerator {
@@ -13,8 +16,12 @@ public class HeightsGenerator {
 	    private int xOffset = 0;
 	    private int zOffset = 0;
 	 
-	    public HeightsGenerator() {
-	        this.seed = random.nextInt(1000000000);
+	    public HeightsGenerator(String seed) {
+	    	if(seed == null || seed.isEmpty()){
+	    		this.seed = random.nextInt(1000000000);
+	    	}else{
+	    		this.seed = getUniqueInteger(seed);
+	    	}
 	    }
 	    
 	    public HeightsGenerator(int seed) {
@@ -72,5 +79,33 @@ public class HeightsGenerator {
 	    private float getNoise(int x, int z) {
 	        random.setSeed(x * 49632 + z * 325176 + seed);
 	        return random.nextFloat() * 2f - 1f;
+	    }
+	    
+	    // https://stackoverflow.com/questions/17583565/get-unique-integer-value-from-string
+	    public int getUniqueInteger(String name){
+	        String plaintext = name;
+	        int hash = name.hashCode();
+	        MessageDigest m;
+	        try {
+	            m = MessageDigest.getInstance("MD5");
+	            m.reset();
+	            m.update(plaintext.getBytes());
+	            byte[] digest = m.digest();
+	            BigInteger bigInt = new BigInteger(1,digest);
+	            String hashtext = bigInt.toString(10);
+	            // Now we need to zero pad it if you actually want the full 32 chars.
+	            while(hashtext.length() < 32 ){
+	              hashtext = "0"+hashtext;
+	            }
+	            int temp = 0;
+	            for(int i =0; i<hashtext.length();i++){
+	                char c = hashtext.charAt(i);
+	                temp+=(int)c;
+	            }
+	            return hash+temp;
+	        } catch (NoSuchAlgorithmException e) {
+	            e.printStackTrace();
+	        }
+	        return hash;
 	    }
 }
