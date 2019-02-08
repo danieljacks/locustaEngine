@@ -21,6 +21,10 @@ public class Entity implements Movable {
 
 	private int textureIndex = 0;
 
+	public Entity(){
+		
+	}
+	
 	public Entity(TexturedModel model, Vector3f position, float rotX, float rotY, float rotZ, float scale) {
 		this.model = model;
 		this.position = position;

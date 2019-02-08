@@ -17,22 +17,23 @@ import org.lwjgl.util.vector.Vector4f;
 public abstract class ShaderProgram {
 	
 	private int programID;
-	private int vertexShaderID;
-	private int fragmentShaderID;
 	private int maxLights;
 	
 	private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
 	
 	public ShaderProgram(String vertexFile,String fragmentFile, int maxLights){
 		this.maxLights = maxLights;
-		vertexShaderID = loadShader(vertexFile,GL20.GL_VERTEX_SHADER);
-		fragmentShaderID = loadShader(fragmentFile,GL20.GL_FRAGMENT_SHADER);
+		int vertexShaderID = loadShader(vertexFile,GL20.GL_VERTEX_SHADER);
+		int fragmentShaderID = loadShader(fragmentFile,GL20.GL_FRAGMENT_SHADER);
 		programID = GL20.glCreateProgram();
 		GL20.glAttachShader(programID, vertexShaderID);
 		GL20.glAttachShader(programID, fragmentShaderID);
 		bindAttributes();
 		GL20.glLinkProgram(programID);
-		GL20.glValidateProgram(programID);
+		GL20.glDetachShader(programID, vertexShaderID);
+		GL20.glDetachShader(programID, fragmentShaderID);
+		GL20.glDeleteShader(vertexShaderID);
+		GL20.glDeleteShader(fragmentShaderID);
 		getAllUniformLocations();
 	}
 	
@@ -52,10 +53,6 @@ public abstract class ShaderProgram {
 	
 	public void cleanUp(){
 		stop();
-		GL20.glDetachShader(programID, vertexShaderID);
-		GL20.glDetachShader(programID, fragmentShaderID);
-		GL20.glDeleteShader(vertexShaderID);
-		GL20.glDeleteShader(fragmentShaderID);
 		GL20.glDeleteProgram(programID);
 	}
 	

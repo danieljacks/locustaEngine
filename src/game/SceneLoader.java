@@ -236,7 +236,7 @@ public class SceneLoader {
 
 		// ANIMATION TEST
 		AnimatedEntity guy = AnimatedModelLoader.loadEntity(new MyFile("res", "villager.dae"),
-				new MyFile("res", "villager.png"));
+				new MyFile("res", "villager.png"), new Vector3f(0,10,0), new Vector3f(0,0,0), 1);
 
 		Animation animation = AnimationLoader.loadAnimation(new MyFile("res", "villager.dae"));
 		guy.doAnimation(animation);

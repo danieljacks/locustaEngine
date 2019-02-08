@@ -49,10 +49,10 @@ public class AnimatedModelRenderer {
 		prepare(camera, lightDir, fog, skyColor);
 		for (AnimatedEntity entity : entities) {
 		entity.getSkin().getDiffuseTexture().bindToUnit(0);
-		entity.getModel().getVao().bind(0, 1, 2, 3, 4);
+		entity.getModelVao().bind(0, 1, 2, 3, 4);
 		this.shader.jointTransforms.loadMatrixArray(entity.getJointTransforms());
-		GL11.glDrawElements(GL11.GL_TRIANGLES, entity.getModel().getVao().getIndexCount(), GL11.GL_UNSIGNED_INT, 0);
-		entity.getModel().getVao().unbind(0, 1, 2, 3, 4);
+		GL11.glDrawElements(GL11.GL_TRIANGLES, entity.getModelVao().getIndexCount(), GL11.GL_UNSIGNED_INT, 0);
+		entity.getModelVao().unbind(0, 1, 2, 3, 4);
 		}
 		finish();
 	}

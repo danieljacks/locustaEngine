@@ -1,5 +1,7 @@
 package animation;
 
+import org.lwjgl.util.vector.Vector3f;
+
 import animationRenderer.AnimatedEntity;
 import colladaLoader.ColladaLoader;
 import dataStructures.AnimatedModelData;
@@ -7,7 +9,6 @@ import dataStructures.JointData;
 import dataStructures.MeshData;
 import dataStructures.SkeletonData;
 import openglObjects.Vao;
-import scene.Model;
 import scene.Skin;
 import textures.Texture;
 import toolbox.MyFile;
@@ -24,13 +25,13 @@ public class AnimatedModelLoader {
 	 *            - the file containing the data for the entity.
 	 * @return The animated entity (no animation applied though)
 	 */
-	public static AnimatedEntity loadEntity(MyFile modelFile, MyFile textureFile) {
+	public static AnimatedEntity loadEntity(MyFile modelFile, MyFile textureFile, Vector3f position, Vector3f rotation, float scale) {
 		AnimatedModelData entityData = ColladaLoader.loadColladaModel(modelFile, 3);
-		Model model = new Model(createVao(entityData.getMeshData()));
+		Vao model = createVao(entityData.getMeshData());
 		Skin texture = new Skin(loadTexture(textureFile), null);
 		SkeletonData skeletonData = entityData.getJointsData();
 		Joint headJoint = createJoints(skeletonData.headJoint);
-		return new AnimatedEntity(model, texture, headJoint, skeletonData.jointCount);
+		return new AnimatedEntity(model, texture, headJoint, skeletonData.jointCount, position, rotation, scale);
 	}
 
 	/**

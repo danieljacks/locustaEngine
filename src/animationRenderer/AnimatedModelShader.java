@@ -16,6 +16,7 @@ public class AnimatedModelShader extends ShaderProgram_animation {
 	private static final MyFile VERTEX_SHADER = new MyFile("animationRenderer", "animatedEntityVertex.glsl");
 	private static final MyFile FRAGMENT_SHADER = new MyFile("animationRenderer", "animatedEntityFragment.glsl");
 
+	//TODO: add position, rotation and scale
 	protected UniformMatrix projectionViewMatrix = new UniformMatrix("projectionViewMatrix");
 	protected UniformVec3 lightDirection = new UniformVec3("lightDirection");
 	protected UniformMat4Array jointTransforms = new UniformMat4Array("jointTransforms", MAX_JOINTS);
@@ -23,6 +24,7 @@ public class AnimatedModelShader extends ShaderProgram_animation {
 	protected UniformFloat fogDensity = new UniformFloat("fogDensity");
 	protected UniformFloat fogGradient = new UniformFloat("fogGradient");
 	protected UniformVec3 skyColour = new UniformVec3("skyColour");
+	//protected UniformVec3 
 
 	/**
 	 * Creates the shader program for the {@link AnimatedModelRenderer} by

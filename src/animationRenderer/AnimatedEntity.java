@@ -1,15 +1,18 @@
 package animationRenderer;
 
 import org.lwjgl.util.vector.Matrix4f;
+import org.lwjgl.util.vector.Vector3f;
 
 import animation.Animation;
 import animation.Animator;
 import animation.Joint;
+import entities.Entity;
+import openglObjects.Vao;
 import scene.Model;
 import scene.Skin;
 
-public class AnimatedEntity {
-	private Model model;
+public class AnimatedEntity extends Entity{
+	private Vao model;
 	private Skin skin;
 	private Joint rootJoint;
 	private int jointCount;
@@ -21,22 +24,28 @@ public class AnimatedEntity {
 	private boolean isImportant = false;
 	private boolean hasAnimation= false;
 	
-	public AnimatedEntity(Model model, Skin skin){
+	public AnimatedEntity(Vao model, Skin skin, Vector3f position, Vector3f rotation, float scale){
 		this.model = model;
 		this.skin = skin;
 		this.setHasAnimation(false);
+		this.setPosition(position);
+		this.setRotX(rotation.x);
+		this.setRotY(rotation.y);
+		this.setRotZ(rotation.z);
+		this.setScale(scale);
 	}
 	
-	public AnimatedEntity(Model model, Skin skin, Joint rootJoint, int jointCount) {
-		this(model, skin);
+	public AnimatedEntity(Vao model, Skin skin, Joint rootJoint, int jointCount, 
+			Vector3f position, Vector3f rotation, float scale) {
+		this(model, skin, position, rotation, scale);
 		this.rootJoint = rootJoint;
 		this.jointCount = jointCount;
 		this.animator = new Animator(this);
 		rootJoint.calcInverseBindTransform(new Matrix4f());
 		this.setHasAnimation(true);
 	}
-
-	public Model getModel() {
+	
+	public Vao getModelVao() {
 		return model;
 	}
 
