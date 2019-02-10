@@ -12,6 +12,7 @@ public class Texture {
 	public final int textureId;
 	public final int size;
 	private final int type;
+	private int numberOfRows = 1;
 
 	protected Texture(int textureId, int size) {
 		this.textureId = textureId;
@@ -36,6 +37,14 @@ public class Texture {
 
 	public static TextureBuilder newTexture(MyFile textureFile) {
 		return new TextureBuilder(textureFile);
+	}
+
+	public int getNumberOfRows() {
+		return numberOfRows;
+	}
+
+	public void setNumberOfRows(int numberOfRows) {
+		this.numberOfRows = numberOfRows;
 	}
 
 }

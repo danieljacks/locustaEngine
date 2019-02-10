@@ -59,7 +59,7 @@ public class MasterRenderer {
 		shadowMapRenderer = new ShadowMapMasterRenderer(camera, shadow.getOffset(), shadow.getShadowDistance(), shadow.getQuality());
 		shinyRenderer = new ShinyRenderer(projectionMatrix, skybox);
 		sunRenderer = new SunRenderer(loader);
-		animatedRenderer = new AnimatedModelRenderer();
+		animatedRenderer = new AnimatedModelRenderer(projectionMatrix, maxLights);
 	}
 
 	public Matrix4f getProjectionMatrix() {
@@ -109,8 +109,9 @@ public class MasterRenderer {
 		}
 		skyboxRenderer.render(camera, scene.getSky().getColour());
 		sunRenderer.render(scene.getSky().getSuns(), camera);
-		animatedRenderer.render(scene.getAnimatedEntities(), camera,
-				scene.getSky().getSuns().get(0).getLightDirection(), scene.getFog(), scene.getSky().getColour());
+		animatedRenderer.render(scene.getAnimatedEntities(), clipPlane, camera,
+				scene.getSky().getSuns().get(0).getLightDirection(), scene.getFog(), scene.getSky().getColour(),
+				scene.getLights());
 		entityBatch.clear();
 		normalMapEntityBatch.clear();
 	}

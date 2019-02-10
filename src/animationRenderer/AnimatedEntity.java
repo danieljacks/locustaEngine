@@ -126,4 +126,15 @@ public class AnimatedEntity extends Entity{
 			addJointsToArray(childJoint, jointMatrices);
 		}
 	}
+	@Override
+	public float getTextureXOffset() {
+		int column = super.textureIndex % skin.getDiffuseTexture().getNumberOfRows();
+		return (float) column / (float) skin.getDiffuseTexture().getNumberOfRows();
+	}
+
+	@Override
+	public float getTextureYOffset() {
+		int row = super.textureIndex / skin.getDiffuseTexture().getNumberOfRows();
+		return (float) row / (float) skin.getDiffuseTexture().getNumberOfRows();
+	}
 }

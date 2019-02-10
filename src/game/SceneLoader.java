@@ -172,8 +172,15 @@ public class SceneLoader {
 			float y = terrain.getHeightOfTerrain(x, z);
 			if (y >= water.getHeight()) {
 				if (i % 3 == 0) {
-					entities.add(new Entity(fern, random.nextInt(4), new Vector3f(x, y, z), 0, random.nextFloat() * 360,
-							0, 0.9f));
+					for(int j = 0; j<10; j++){
+						x = random.nextFloat() * terrain.getSize();
+						z = random.nextFloat() * -terrain.getSize();
+						y = terrain.getHeightOfTerrain(x, z);
+						if (y >= water.getHeight()) {
+							entities.add(new Entity(fern, random.nextInt(4), new Vector3f(x, y, z), 0, random.nextFloat() * 360,
+									0, 0.9f));
+						}
+					}
 				} else if (i % 2 == 0) {
 					entities.add(new Entity(pine, 1, new Vector3f(x, y, z), 0, random.nextFloat() * 360, 0,
 							random.nextFloat() * 2f + 4f));
@@ -236,7 +243,7 @@ public class SceneLoader {
 
 		// ANIMATION TEST
 		AnimatedEntity guy = AnimatedModelLoader.loadEntity(new MyFile("res", "villager.dae"),
-				new MyFile("res", "villager.png"), new Vector3f(0,10,0), new Vector3f(0,0,0), 1);
+				new MyFile("res", "villager.png"), new Vector3f(75, 5, -75), new Vector3f(0,0,0), 20);
 
 		Animation animation = AnimationLoader.loadAnimation(new MyFile("res", "villager.dae"));
 		guy.doAnimation(animation);

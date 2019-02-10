@@ -19,7 +19,7 @@ public class Entity implements Movable {
 	private boolean important = true;
 	private List<EntityActivity> activities;
 
-	private int textureIndex = 0;
+	protected int textureIndex = 0;
 
 	public Entity(){
 		
