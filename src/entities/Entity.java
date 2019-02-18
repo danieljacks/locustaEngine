@@ -18,6 +18,7 @@ public class Entity implements Movable {
 	private boolean castShadow = true;
 	private boolean important = true;
 	private List<EntityActivity> activities;
+	private EntityActivity lastActivity = EntityActivity.IDDLE;
 
 	protected int textureIndex = 0;
 
@@ -174,8 +175,10 @@ public class Entity implements Movable {
 	public void addActivity(EntityActivity activity) {
 		if (activities == null) {
 			activities = new ArrayList<EntityActivity>();
+			activities.add(activity);
+		}else if(!activities.contains(activity)){
+			activities.add(activity);
 		}
-		activities.add(activity);
 	}
 
 	public void removeActivity(EntityActivity activity) {
@@ -184,5 +187,13 @@ public class Entity implements Movable {
 		} else {
 			activities.remove(activity);
 		}
+	}
+
+	public EntityActivity getLastActivity() {
+		return lastActivity;
+	}
+
+	public void setLastActivity(EntityActivity lastActivity) {
+		this.lastActivity = lastActivity;
 	}
 }

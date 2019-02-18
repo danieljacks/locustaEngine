@@ -11,9 +11,11 @@ public class Skybox {
 	private RawModel cube;
 	private int texture;
 	private int nightTexture;
+	private int size;
 	
-	public Skybox(Loader loader, float size){
-		setCube(loader.loadToVAO(createCube(size), 3));
+	public Skybox(Loader loader, int size){
+		this.size = size;
+		setCube(loader.loadToVAO(createCube(this.size), 3));
 		setTexture(loader.loadCubeMap(TEXTURE_FILES));
 		setNightTexture(loader.loadCubeMap(NIGHT_TEXTURE_FILES));
 	}
@@ -86,5 +88,13 @@ public class Skybox {
 		    -size, -size,  size,
 		    size, -size,  size
 		};
+	}
+
+	public int getSize() {
+		return size;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
 	}
 }

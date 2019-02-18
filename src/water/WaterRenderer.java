@@ -21,7 +21,6 @@ public class WaterRenderer {
 	
 	private static final String DUDV_MAP = "waterDUDV";
 	private static final String NORMAL_MAP = "normal";
-	private static final float WAVE_SPEED = 0.03f;
 
 	private RawModel quad;
 	private WaterShader shader;
@@ -51,6 +50,15 @@ public class WaterRenderer {
 					new Vector3f(tile.getX(), tile.getHeight(), tile.getZ()), 0, 0, 0,
 					tile.getSize());
 			shader.loadModelMatrix(modelMatrix);
+			shader.loadViewMatrix(camera);
+			shader.loadwaveStrength(tile.getWaveStrength());
+			shader.loadshineDamper(tile.getShineDamper());
+			shader.loadreflectivity(tile.getReflectivity());
+			shader.loadTiling(tile.getTiling());
+			moveFactor += tile.getWaveSpeed() * DisplayManager.getFrameTime();
+			moveFactor %= 1;
+			shader.loadMoveFactor(moveFactor);
+			
 			GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, quad.getVertexCount());
 		}
 		unbind();
@@ -59,9 +67,6 @@ public class WaterRenderer {
 	private void prepareRender(Camera camera, Light sun, Vector3f skyColor, Fog fog){
 		shader.start();
 		shader.loadViewMatrix(camera);
-		moveFactor += WAVE_SPEED * DisplayManager.getFrameTime();
-		moveFactor %= 1;
-		shader.loadMoveFactor(moveFactor);
 		shader.loadLight(sun);
 		shader.loadSkyColour(skyColor);
 		shader.loadFog(fog.getDensity(), fog.getGradient());

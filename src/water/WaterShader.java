@@ -28,6 +28,10 @@ public class WaterShader extends ShaderProgram {
 	private int location_fogDensity;
 	private int location_fogGradient;
 	private int location_skyColor;
+	private int location_waveStrength;
+	private int location_shineDamper;
+	private int location_reflectivity;
+	private int location_tiling;
 	
 
 	public WaterShader() {
@@ -56,6 +60,10 @@ public class WaterShader extends ShaderProgram {
 		location_fogDensity = super.getUniformLocation("fogDensity");
 		location_fogGradient = super.getUniformLocation("fogGradient");
 		location_skyColor = super.getUniformLocation("skyColor");
+		location_waveStrength = super.getUniformLocation("waveStrength");
+		location_shineDamper = super.getUniformLocation("shineDamper");
+		location_reflectivity = super.getUniformLocation("reflectivity");
+		location_tiling = super.getUniformLocation("tiling");
 	}
 	
 	public void connectTextureUnits(){
@@ -96,6 +104,22 @@ public class WaterShader extends ShaderProgram {
 	
 	public void loadSkyColour(Vector3f color){
 		super.loadVector(location_skyColor, color);
+	}
+	
+	public void loadwaveStrength(float waveStrength){
+		super.loadFloat(location_waveStrength, waveStrength);
+	}
+	
+	public void loadshineDamper(float shineDamper){
+		super.loadFloat(location_shineDamper, shineDamper);
+	}
+	
+	public void loadreflectivity(float reflectivity){
+		super.loadFloat(location_reflectivity, reflectivity);
+	}
+	
+	public void loadTiling(int tiling){
+		super.loadFloat(location_tiling, tiling);
 	}
 
 }

@@ -21,7 +21,6 @@ import entities.Camera;
 import entities.Entity;
 import entities.Fog;
 import entities.Light;
-import entities.Player;
 import entities.Sky;
 import fontMeshCreator.FontType;
 import fontMeshCreator.GUIText;

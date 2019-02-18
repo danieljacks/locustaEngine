@@ -8,8 +8,8 @@ import entities.Camera;
 import entities.Entity;
 import entities.Fog;
 import entities.Light;
-import entities.Player;
 import entities.Sky;
+import game.Player;
 import guis.GuiTexture;
 import lensFlare.FlareManager;
 import shinyEntities.ShinyEntity;
@@ -160,8 +160,8 @@ public class Scene {
 		return player;
 	}
 	public void setPlayer(Player player) {
-		entities.remove(this.player);
-		entities.add(player);
+		animatedEntities.remove(this.player);
+		animatedEntities.add(player);
 		this.player = player;
 	}
 }

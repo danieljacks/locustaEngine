@@ -137,4 +137,12 @@ public class AnimatedEntity extends Entity{
 		int row = super.textureIndex / skin.getDiffuseTexture().getNumberOfRows();
 		return (float) row / (float) skin.getDiffuseTexture().getNumberOfRows();
 	}
+
+	public int getJointCount() {
+		return jointCount;
+	}
+
+	public void setJointCount(int jointCount) {
+		this.jointCount = jointCount;
+	}
 }

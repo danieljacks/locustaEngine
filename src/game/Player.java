@@ -1,15 +1,20 @@
-package entities;
-
-import models.TexturedModel;
+package game;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector3f;
 
+import animation.AnimationLoader;
+import animation.Joint;
+import animationRenderer.AnimatedEntity;
+import entities.EntityActivity;
+import openglObjects.Vao;
 import renderEngine.DisplayManager;
 import scene.Scene;
+import scene.Skin;
 import terrains.Terrain;
+import toolbox.MyFile;
 
-public class Player extends Entity {
+public class Player extends AnimatedEntity {
 
 	private float runSpeed;
 	private float turnSpeed;
@@ -21,10 +26,23 @@ public class Player extends Entity {
 	private float upwardsSpeed = 0;
 
 	private boolean isInAir = false;
+	
+	
+	
 
-	public Player(TexturedModel model, Vector3f position, float rotX, float rotY, float rotZ,
+	public Player(Vao model, Skin skin, Joint rootJoint, int jointCount, Vector3f position, Vector3f rotation,
 			float scale, float runSpeed, float turnSpeed, float gravity, float jumpPower) {
-		super(model, position, rotX, rotY, rotZ, scale);
+		super(model, skin, rootJoint, jointCount, position, rotation, scale);
+		this.runSpeed = runSpeed;
+		this.turnSpeed = turnSpeed;
+		this.gravity = gravity;
+		this.jumpPower = jumpPower;
+	}
+	
+	public Player(AnimatedEntity baseEntity, float runSpeed, float turnSpeed, float gravity, float jumpPower) {
+		super(baseEntity.getModelVao(), baseEntity.getSkin(), baseEntity.getRootJoint(), baseEntity.getJointCount(), 
+				baseEntity.getPosition(), new Vector3f(baseEntity.getRotX(), baseEntity.getRotY(), baseEntity.getRotZ()), 
+				baseEntity.getScale());
 		this.runSpeed = runSpeed;
 		this.turnSpeed = turnSpeed;
 		this.gravity = gravity;
@@ -58,12 +76,20 @@ public class Player extends Entity {
 	private void checkInputs() {
 		if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
 			this.currentSpeed = this.runSpeed;
+			this.removeActivity(EntityActivity.RUN_BACKWARD);
+			this.removeActivity(EntityActivity.IDDLE);
+			this.addActivity(EntityActivity.RUN_FORWARD);
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
 			this.currentSpeed = -this.runSpeed;
+			this.removeActivity(EntityActivity.RUN_FORWARD);
+			this.removeActivity(EntityActivity.IDDLE);
+			this.addActivity(EntityActivity.RUN_BACKWARD);
 		} else {
+			this.removeActivity(EntityActivity.RUN_BACKWARD);
+			this.removeActivity(EntityActivity.RUN_FORWARD);
+			this.addActivity(EntityActivity.IDDLE);
 			this.currentSpeed = 0;
 		}
-
 		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
 			this.currentTurnSpeed = -this.turnSpeed;
 		} else if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
@@ -108,9 +134,30 @@ public class Player extends Entity {
 	public void setJumpPower(float jumpPower) {
 		this.jumpPower = jumpPower;
 	}
-	@Override 
-	public void update(Scene scene){
-		//super.update(scene);
+
+	@Override
+	public void update(Scene scene) {
+		for(EntityActivity activity : this.getActivities()){
+			switch(activity){
+			case RUN_FORWARD:
+				if(!activity.equals(this.getLastActivity())){
+					this.doAnimation(AnimationLoader.loadAnimation(new MyFile("res", "objects", "villager", "animations", "run_forward.dae")));
+				}
+				break;
+			case RUN_BACKWARD:
+				if(!activity.equals(this.getLastActivity())){
+					this.doAnimation(AnimationLoader.loadAnimation(new MyFile("res", "objects", "villager", "animations", "run_forward.dae")));
+				}
+				break;
+			case IDDLE:
+				if(!activity.equals(this.getLastActivity())){
+					this.doAnimation(AnimationLoader.loadAnimation(new MyFile("res", "objects", "villager", "animations", "iddle.dae")));
+				}
+				//this.doAnimation(null);
+				break;
+			}
+			this.setLastActivity(activity);
+		}
 		move(scene.getTerrains().get(0));
 	}
 
