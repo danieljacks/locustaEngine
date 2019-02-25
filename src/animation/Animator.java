@@ -8,7 +8,6 @@ import org.lwjgl.util.vector.Matrix4f;
 import animationRenderer.AnimatedEntity;
 import renderEngine.DisplayManager;
 
-
 /**
  * 
  * This class contains all the functionality to apply an animation to an
@@ -54,8 +53,11 @@ public class Animator {
 	 *            - the new animation to carry out.
 	 */
 	public void doAnimation(Animation animation) {
-		this.animationTime = 0;
-		this.currentAnimation = animation;
+		if (currentAnimation == null
+				|| (currentAnimation != null && !animation.getName().equals(currentAnimation.getName()))) {
+			this.animationTime = 0;
+			this.currentAnimation = animation;
+		}
 	}
 
 	/**

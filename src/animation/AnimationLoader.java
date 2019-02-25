@@ -36,7 +36,7 @@ public class AnimationLoader {
 		for (int i = 0; i < frames.length; i++) {
 			frames[i] = createKeyFrame(animationData.keyFrames[i]);
 		}
-		return new Animation(animationData.lengthSeconds, frames);
+		return new Animation(animationData.lengthSeconds, frames, colladaFile.getName());
 	}
 
 	/**

@@ -7,6 +7,7 @@ public enum EntityActivity {
 	ROTATE_Y_MINUS,
 	ROTATE_Z_PLUS,
 	ROTATE_Z_MINUS,
+	CONSTANT_JUMP,
 	PLAYER,
 	CAMERA,
 	RUN_FORWARD,

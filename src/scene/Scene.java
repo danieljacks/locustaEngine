@@ -33,6 +33,8 @@ public class Scene {
 	private Player player;
 	
 	private float gravity;
+	private float waterLevel;
+	private float ambientLighLevel;
 	
 	public List<Entity> getEntities() {
 		return entities;
@@ -163,5 +165,17 @@ public class Scene {
 		animatedEntities.remove(this.player);
 		animatedEntities.add(player);
 		this.player = player;
+	}
+	public float getWaterLevel() {
+		return waterLevel;
+	}
+	public void setWaterLevel(float waterLevel) {
+		this.waterLevel = waterLevel;
+	}
+	public float getAmbientLighLevel() {
+		return ambientLighLevel;
+	}
+	public void setAmbientLighLevel(float ambientLighLevel) {
+		this.ambientLighLevel = ambientLighLevel;
 	}
 }

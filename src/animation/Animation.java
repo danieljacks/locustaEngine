@@ -14,6 +14,7 @@ public class Animation {
 
 	private final float length;//in seconds
 	private final KeyFrame[] keyFrames;
+	private final String name;
 
 	/**
 	 * @param lengthInSeconds
@@ -22,9 +23,10 @@ public class Animation {
 	 *            - all the keyframes for the animation, ordered by time of
 	 *            appearance in the animation.
 	 */
-	public Animation(float lengthInSeconds, KeyFrame[] frames) {
+	public Animation(float lengthInSeconds, KeyFrame[] frames, String name) {
 		this.keyFrames = frames;
 		this.length = lengthInSeconds;
+		this.name = name;
 	}
 
 	/**
@@ -41,6 +43,10 @@ public class Animation {
 	 */
 	public KeyFrame[] getKeyFrames() {
 		return keyFrames;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 }

@@ -4,6 +4,7 @@ import org.lwjgl.util.vector.Matrix4f;
 
 import shaders.ShaderProgram_animation;
 import shaders.UniformFloat;
+import shaders.UniformInt;
 import shaders.UniformMat4Array;
 import shaders.UniformMatrix;
 import shaders.UniformSampler;
@@ -22,9 +23,7 @@ public class AnimatedModelShader extends ShaderProgram_animation {
 	private static final MyFile VERTEX_SHADER = new MyFile("animationRenderer", "animatedEntityVertex.txt");
 	private static final MyFile FRAGMENT_SHADER = new MyFile("animationRenderer", "animatedEntityFragment.txt");
 
-	protected UniformMatrix projectionViewMatrix;
 	protected UniformMatrix transformationMatrix;
-	protected UniformVec3 lightDirection;
 	protected UniformMat4Array jointTransforms;
 	private UniformSampler diffuseMap;
 	protected UniformFloat fogDensity;
@@ -36,6 +35,12 @@ public class AnimatedModelShader extends ShaderProgram_animation {
 	protected UniformVec3Array lightPosition;
 	protected UniformVec3Array lightColor;
 	protected UniformVec3Array lightAttenuation;
+	protected UniformInt lightsCount;
+	protected UniformMatrix projectionMatrix;
+	protected UniformMatrix viewMatrix;
+	protected UniformFloat shineDamper;
+	protected UniformFloat reflectivity;
+	protected UniformFloat ambientLightLevel;
 
 	/**
 	 * Creates the shader program for the {@link AnimatedModelRenderer} by
@@ -43,12 +48,10 @@ public class AnimatedModelShader extends ShaderProgram_animation {
 	 * location of all the specified uniform variables, and also indicates that
 	 * the diffuse texture will be sampled from texture unit 0.
 	 */
-	public AnimatedModelShader(int maxLights) {
+	public AnimatedModelShader() {
 		super(VERTEX_SHADER, FRAGMENT_SHADER, "in_position", "in_textureCoords", "in_normal", "in_jointIndices",
 				"in_weights");
-		projectionViewMatrix = new UniformMatrix("projectionViewMatrix");
 		transformationMatrix = new UniformMatrix("transformationMatrix");
-		lightDirection = new UniformVec3("lightDirection");
 		jointTransforms = new UniformMat4Array("jointTransforms", MAX_JOINTS);
 		diffuseMap = new UniformSampler("diffuseMap");
 		fogDensity = new UniformFloat("fogDensity");
@@ -57,14 +60,18 @@ public class AnimatedModelShader extends ShaderProgram_animation {
 		textureOffset = new UniformVec2("textureOffset");
 		plane = new UniformVec4("plane");
 		numberOfRows = new UniformFloat("numberOfRows");
-		lightPosition = new UniformVec3Array("lightPosition", maxLights);
-		lightColor = new UniformVec3Array("lightColor", maxLights);
-		lightAttenuation = new UniformVec3Array("lightAttenuation", maxLights);
+		lightPosition = new UniformVec3Array("lightPosition", 25);
+		lightColor = new UniformVec3Array("lightColor", 25);
+		lightAttenuation = new UniformVec3Array("lightAttenuation", 25);
+		lightsCount = new UniformInt("lightsCount");
+		projectionMatrix = new UniformMatrix("projectionMatrix");
+		viewMatrix = new UniformMatrix("viewMatrix");
+		shineDamper = new UniformFloat("shineDamper");
+		reflectivity = new UniformFloat("reflectivity");
+		ambientLightLevel = new UniformFloat("ambientLight");
 		super.storeAllUniformLocations(
-				projectionViewMatrix, 
 				transformationMatrix, 
 				diffuseMap, 
-				lightDirection,
 				jointTransforms, 
 				fogDensity, 
 				fogGradient, 
@@ -74,7 +81,13 @@ public class AnimatedModelShader extends ShaderProgram_animation {
 				numberOfRows,
 				lightPosition,
 				lightColor,
-				lightAttenuation);
+				lightAttenuation,
+				lightsCount,
+				projectionMatrix,
+				viewMatrix,
+				shineDamper,
+				reflectivity,
+				ambientLightLevel);
 		connectTextureUnits();
 	}
 

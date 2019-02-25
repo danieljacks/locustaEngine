@@ -33,6 +33,7 @@ public class NormalMappingShader extends ShaderProgram{
 	private int location_normalMap;
 	private int location_fogDensity;
 	private int location_fogGradient;
+	private int location_ambientLightLevel;
 
 	public NormalMappingShader(int maxLights) {
 		super(VERTEX_FILE, FRAGMENT_FILE, maxLights);
@@ -63,6 +64,7 @@ public class NormalMappingShader extends ShaderProgram{
 		location_usesSpecularMap = super.getUniformLocation("usesSpecularMap");
 		location_fogDensity = super.getUniformLocation("fogDensity");
 		location_fogGradient = super.getUniformLocation("fogGradient");
+		location_ambientLightLevel = super.getUniformLocation("ambientLight");
 		location_lightPositionEyeSpace = new int[this.getMaxLights()];
 		location_lightColour = new int[this.getMaxLights()];
 		location_attenuation = new int[this.getMaxLights()];
@@ -144,6 +146,10 @@ public class NormalMappingShader extends ShaderProgram{
 	public void loadFog(float density, float gradient){
 		super.loadFloat(location_fogDensity, density);
 		super.loadFloat(location_fogGradient, gradient);
+	}
+	
+	public void loadAmbientLightLevel(float ambientLightLevel){
+		super.loadFloat(location_ambientLightLevel, ambientLightLevel);
 	}
 
 }

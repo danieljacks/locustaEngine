@@ -7,9 +7,12 @@ import animation.Animation;
 import animation.Animator;
 import animation.Joint;
 import entities.Entity;
+import models.RawModel;
+import models.TexturedModel;
 import openglObjects.Vao;
 import scene.Model;
 import scene.Skin;
+import textures.ModelTexture;
 
 public class AnimatedEntity extends Entity{
 	private Vao model;

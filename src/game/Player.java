@@ -1,5 +1,7 @@
 package game;
 
+import java.util.ArrayList;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -7,6 +9,7 @@ import animation.AnimationLoader;
 import animation.Joint;
 import animationRenderer.AnimatedEntity;
 import entities.EntityActivity;
+import entities.StatusEffect;
 import openglObjects.Vao;
 import renderEngine.DisplayManager;
 import scene.Scene;
@@ -26,9 +29,6 @@ public class Player extends AnimatedEntity {
 	private float upwardsSpeed = 0;
 
 	private boolean isInAir = false;
-	
-	
-	
 
 	public Player(Vao model, Skin skin, Joint rootJoint, int jointCount, Vector3f position, Vector3f rotation,
 			float scale, float runSpeed, float turnSpeed, float gravity, float jumpPower) {
@@ -38,11 +38,11 @@ public class Player extends AnimatedEntity {
 		this.gravity = gravity;
 		this.jumpPower = jumpPower;
 	}
-	
+
 	public Player(AnimatedEntity baseEntity, float runSpeed, float turnSpeed, float gravity, float jumpPower) {
-		super(baseEntity.getModelVao(), baseEntity.getSkin(), baseEntity.getRootJoint(), baseEntity.getJointCount(), 
-				baseEntity.getPosition(), new Vector3f(baseEntity.getRotX(), baseEntity.getRotY(), baseEntity.getRotZ()), 
-				baseEntity.getScale());
+		super(baseEntity.getModelVao(), baseEntity.getSkin(), baseEntity.getRootJoint(), baseEntity.getJointCount(),
+				baseEntity.getPosition(),
+				new Vector3f(baseEntity.getRotX(), baseEntity.getRotY(), baseEntity.getRotZ()), baseEntity.getScale());
 		this.runSpeed = runSpeed;
 		this.turnSpeed = turnSpeed;
 		this.gravity = gravity;
@@ -137,27 +137,73 @@ public class Player extends AnimatedEntity {
 
 	@Override
 	public void update(Scene scene) {
-		for(EntityActivity activity : this.getActivities()){
-			switch(activity){
-			case RUN_FORWARD:
-				if(!activity.equals(this.getLastActivity())){
-					this.doAnimation(AnimationLoader.loadAnimation(new MyFile("res", "objects", "villager", "animations", "run_forward.dae")));
-				}
-				break;
-			case RUN_BACKWARD:
-				if(!activity.equals(this.getLastActivity())){
-					this.doAnimation(AnimationLoader.loadAnimation(new MyFile("res", "objects", "villager", "animations", "run_forward.dae")));
-				}
-				break;
-			case IDDLE:
-				if(!activity.equals(this.getLastActivity())){
-					this.doAnimation(AnimationLoader.loadAnimation(new MyFile("res", "objects", "villager", "animations", "iddle.dae")));
-				}
-				//this.doAnimation(null);
-				break;
-			}
-			this.setLastActivity(activity);
+		if(isInAir){
+			this.addEffect(StatusEffect.ON_AIR);
+		}else{
+			this.removeEffect(StatusEffect.ON_AIR);
 		}
+		
+		if(this.getPosition().y < scene.getWaterLevel()-5){
+			this.addEffect(StatusEffect.UNDER_WATER);
+		}else{
+			this.removeEffect(StatusEffect.UNDER_WATER);
+		}
+		
+		if(this.getEffects().contains(StatusEffect.UNDER_WATER)){
+			if (this.getActivities().contains(EntityActivity.RUN_FORWARD)){
+				this.doAnimation(AnimationLoader.loadAnimation(
+						new MyFile("res", "objects", "villager", "animations", "swim_forward.dae")));
+			}
+			if(this.getActivities().contains(EntityActivity.RUN_BACKWARD)){
+				this.doAnimation(AnimationLoader.loadAnimation(
+						new MyFile("res", "objects", "villager", "animations", "swim_forward.dae")));
+			}
+			if(this.getActivities().contains(EntityActivity.IDDLE)){
+				this.doAnimation(
+						AnimationLoader.loadAnimation(new MyFile("res", "objects", "villager", "animations", "swim_forward.dae")));
+			}
+		} else if (this.getEffects().contains(StatusEffect.ON_FIRE)){
+			if (this.getActivities().contains(EntityActivity.RUN_FORWARD)){
+				this.doAnimation(AnimationLoader.loadAnimation(
+						new MyFile("res", "objects", "villager", "animations", "run_forward_on_fire.dae")));
+			}
+			if(this.getActivities().contains(EntityActivity.RUN_BACKWARD)){
+				this.doAnimation(AnimationLoader.loadAnimation(
+						new MyFile("res", "objects", "villager", "animations", "run_forward_on_fire.dae")));
+			}
+			if(this.getActivities().contains(EntityActivity.IDDLE)){
+				this.doAnimation(
+						AnimationLoader.loadAnimation(new MyFile("res", "objects", "villager", "animations", "iddle.dae")));
+			}
+		} else if (this.getEffects().contains(StatusEffect.ON_AIR)){
+			if (this.getActivities().contains(EntityActivity.RUN_FORWARD)){
+				this.doAnimation(AnimationLoader.loadAnimation(
+						new MyFile("res", "objects", "villager", "animations", "run_forward_on_fire.dae")));
+			}
+			if(this.getActivities().contains(EntityActivity.RUN_BACKWARD)){
+				this.doAnimation(AnimationLoader.loadAnimation(
+						new MyFile("res", "objects", "villager", "animations", "run_forward_on_fire.dae")));
+			}
+			if(this.getActivities().contains(EntityActivity.IDDLE)){
+				this.doAnimation(
+						AnimationLoader.loadAnimation(new MyFile("res", "objects", "villager", "animations", "run_forward_on_fire.dae")));
+			}
+		} else {
+			if (this.getActivities().contains(EntityActivity.RUN_FORWARD)){
+				this.doAnimation(AnimationLoader.loadAnimation(
+						new MyFile("res", "objects", "villager", "animations", "run_forward.dae")));
+			}
+			if(this.getActivities().contains(EntityActivity.RUN_BACKWARD)){
+				this.doAnimation(AnimationLoader.loadAnimation(
+						new MyFile("res", "objects", "villager", "animations", "run_forward.dae")));
+			}
+			if(this.getActivities().contains(EntityActivity.IDDLE)){
+				this.doAnimation(
+						AnimationLoader.loadAnimation(new MyFile("res", "objects", "villager", "animations", "iddle.dae")));
+			}
+		}
+		this.setLastActivities(new ArrayList<EntityActivity>(this.getActivities()));
+		this.setLastEffects(new ArrayList<StatusEffect>(this.getEffects()));
 		move(scene.getTerrains().get(0));
 	}
 

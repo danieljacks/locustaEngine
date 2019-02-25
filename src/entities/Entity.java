@@ -18,7 +18,9 @@ public class Entity implements Movable {
 	private boolean castShadow = true;
 	private boolean important = true;
 	private List<EntityActivity> activities;
-	private EntityActivity lastActivity = EntityActivity.IDDLE;
+	private List<EntityActivity> lastActivities;
+	private List<StatusEffect> effects;
+	private List<StatusEffect> lastEffects;
 
 	protected int textureIndex = 0;
 
@@ -154,11 +156,16 @@ public class Entity implements Movable {
 				case ROTATE_Z_MINUS:
 					this.increaseRotation(0, 0, -1);
 					break;
+				case CONSTANT_JUMP:
+					//TODO 
+					break;
 				default:
 					break;
 				}
 			}
 		}
+		this.setLastActivities(new ArrayList<EntityActivity>(this.getActivities()));
+		this.setLastEffects(new ArrayList<StatusEffect>(this.getEffects()));
 	}
 
 	public List<EntityActivity> getActivities() {
@@ -189,11 +196,111 @@ public class Entity implements Movable {
 		}
 	}
 
-	public EntityActivity getLastActivity() {
-		return lastActivity;
+	public List<EntityActivity> getLastActivities() {
+		if (lastActivities == null) {
+			lastActivities = new ArrayList<EntityActivity>();
+		}
+		return lastActivities;
 	}
 
-	public void setLastActivity(EntityActivity lastActivity) {
-		this.lastActivity = lastActivity;
+	public void setLastActivities(List<EntityActivity> lastActivities) {
+		this.lastActivities = lastActivities;
+	}
+	
+	public void addLastActivity(EntityActivity activity) {
+		if (lastActivities == null) {
+			lastActivities = new ArrayList<EntityActivity>();
+			lastActivities.add(activity);
+		}else if(!lastActivities.contains(activity)){
+			lastActivities.add(activity);
+		}
+	}
+
+	public void removeLastActivity(EntityActivity activity) {
+		if (lastActivities == null) {
+			lastActivities = new ArrayList<EntityActivity>();
+		} else {
+			lastActivities.remove(activity);
+		}
+	}
+	
+	public List<EntityActivity> getNewActivities(){
+		if(activities == null){
+			activities = new ArrayList<EntityActivity>();
+		}
+		if(lastActivities == null){
+			lastActivities = new ArrayList<EntityActivity>();
+		}
+		List<EntityActivity> diff = new ArrayList<>(activities);
+		diff.removeAll(lastActivities);
+		return diff;
+	}
+
+	public List<StatusEffect> getEffects() {
+		if(effects == null){
+			effects = new ArrayList<StatusEffect>();
+		}
+		return effects;
+	}
+
+	public void setEffects(List<StatusEffect> effects) {
+		this.effects = effects;
+	}
+	
+	public void addEffect(StatusEffect effect){
+		if(effects == null){
+			effects = new ArrayList<StatusEffect>();
+			effects.add(effect);
+		}else if(!effects.contains(effect)){
+			effects.add(effect);
+		}
+	}
+	
+	public void removeEffect(StatusEffect effect){
+		if(effects == null){
+			effects = new ArrayList<StatusEffect>();
+		}else{
+			effects.remove(effect);
+		}
+	}
+
+	public List<StatusEffect> getLastEffects() {
+		if(lastEffects == null){
+			lastEffects = new ArrayList<StatusEffect>();
+		}
+		return lastEffects;
+	}
+
+	public void setLastEffects(List<StatusEffect> lastEffects) {
+		this.lastEffects = lastEffects;
+	}
+	
+	public void addlastEffect(StatusEffect effect){
+		if(lastEffects == null){
+			lastEffects = new ArrayList<StatusEffect>();
+			lastEffects.add(effect);
+		}else if(!lastEffects.contains(effect)){
+			lastEffects.add(effect);
+		}
+	}
+	
+	public void removeLastEffect(StatusEffect effect){
+		if(lastEffects == null){
+			lastEffects = new ArrayList<StatusEffect>();
+		}else{
+			lastEffects.remove(effect);
+		}
+	}
+	
+	public List<StatusEffect> getNewEffects(){
+		if(effects == null){
+			effects = new ArrayList<StatusEffect>();
+		}
+		if(lastEffects == null){
+			lastEffects = new ArrayList<StatusEffect>();
+		}
+		List<StatusEffect> diff = new ArrayList<>(effects);
+		diff.removeAll(lastEffects);
+		return diff;
 	}
 }

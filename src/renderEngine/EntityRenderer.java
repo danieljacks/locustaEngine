@@ -33,9 +33,9 @@ public class EntityRenderer {
 	}
 
 	public void render(Map<TexturedModel, List<Entity>> entities, Vector4f clipPlane, List<Light> lights,
-			ICamera camera, Vector3f skyColor, Fog fog) {
+			ICamera camera, Vector3f skyColor, Fog fog, float ambientLightLevel) {
 		shader.start();
-		prepare(clipPlane, lights, camera, skyColor, fog);
+		prepare(clipPlane, lights, camera, skyColor, fog, ambientLightLevel);
 		for (TexturedModel model : entities.keySet()) {
 			prepareTexturedModel(model);
 			List<Entity> batch = entities.get(model);
@@ -86,12 +86,13 @@ public class EntityRenderer {
 		shader.loadOffset(entity.getTextureXOffset(), entity.getTextureYOffset());
 	}
 	
-	private void prepare(Vector4f clipPlane, List<Light> lights, ICamera camera, Vector3f skyColor, Fog fog) {
+	private void prepare(Vector4f clipPlane, List<Light> lights, ICamera camera, Vector3f skyColor, Fog fog, float ambientLightLevel) {
 		shader.loadClipPlane(clipPlane);
 		shader.loadSkyColour(skyColor);
 		shader.loadLights(lights);
 		shader.loadViewMatrix(camera);
 		shader.loadFog(fog.getDensity(), fog.getGradient());
+		shader.loadAmbientLightLevel(ambientLightLevel);
 	}
 
 	public void cleanUp() {

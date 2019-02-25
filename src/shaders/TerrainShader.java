@@ -10,6 +10,7 @@ import toolbox.ICamera;
 import toolbox.Maths;
 import entities.Camera;
 import entities.Light;
+import scene.Shadow;
 
 public class TerrainShader extends ShaderProgram{
 	
@@ -37,6 +38,8 @@ public class TerrainShader extends ShaderProgram{
 	private int location_fogGradient;
 	private int location_shadowDistance;
 	private int location_transitionDistance;
+	private int location_ambientLightLevel;
+	private int location_shadowQuality;
 
 	public TerrainShader(int maxLights) {
 		super(VERTEX_FILE, FRAGMENT_FILE, maxLights);
@@ -69,6 +72,8 @@ public class TerrainShader extends ShaderProgram{
 		location_fogGradient = super.getUniformLocation("fogGradient");
 		location_shadowDistance = super.getUniformLocation("shadowDistance");
 		location_transitionDistance = super.getUniformLocation("transitionDistance");
+		location_ambientLightLevel = super.getUniformLocation("ambientLight");
+		location_shadowQuality = super.getUniformLocation("shadowMapSize");
 		location_lightPosition = new int[this.getMaxLights()];
 		location_lightColour = new int[this.getMaxLights()];
 		location_attenuation = new int[this.getMaxLights()];
@@ -142,9 +147,13 @@ public class TerrainShader extends ShaderProgram{
 		super.loadFloat(location_fogGradient, gradient);
 	}
 	
-	public void loadShadow(float viewDistance, float transitionDistance){
-		super.loadFloat(location_shadowDistance, viewDistance);
-		super.loadFloat(location_transitionDistance, transitionDistance);
+	public void loadShadow(Shadow shadow){
+		super.loadFloat(location_shadowDistance, shadow.getShadowDistance());
+		super.loadFloat(location_transitionDistance, shadow.getTransitionDistance());
+		super.loadFloat(location_shadowQuality, shadow.getQuality());
 	}
-
+	
+	public void loadAmbientLightLevel(float ambientLightLevel){
+		super.loadFloat(location_ambientLightLevel, ambientLightLevel);
+	}
 }

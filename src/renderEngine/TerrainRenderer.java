@@ -33,9 +33,9 @@ public class TerrainRenderer {
 	}
 
 	public void render(List<Terrain> terrains, Matrix4f toShadowSpace, Vector4f clipPlane, List<Light> lights,
-			ICamera camera, Vector3f skyColor, Fog fog, Shadow shadow) {
+			ICamera camera, Vector3f skyColor, Fog fog, Shadow shadow, float ambientLightLevel) {
 		shader.start();
-		prepare(clipPlane, lights, camera, skyColor, fog, shadow);
+		prepare(clipPlane, lights, camera, skyColor, fog, shadow, ambientLightLevel);
 		shader.loadToShadowSpaceMatrix(toShadowSpace);
 		for (Terrain terrain : terrains) {
 			prepareTerrain(terrain);
@@ -61,14 +61,19 @@ public class TerrainRenderer {
 		TerrainTexturePack texturePack = terrain.getTexturePack();
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getBackgroundTexture().getTextureID());
+		//GL11.glTexCoord2d(2, 2);
 		GL13.glActiveTexture(GL13.GL_TEXTURE1);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getrTexture().getTextureID());
+		//GL11.glTexCoord2d(100, 100);
 		GL13.glActiveTexture(GL13.GL_TEXTURE2);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getgTexture().getTextureID());
+		//GL11.glTexCoord2d(100, 100);
 		GL13.glActiveTexture(GL13.GL_TEXTURE3);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturePack.getbTexture().getTextureID());
+		//GL11.glTexCoord2d(100, 100);
 		GL13.glActiveTexture(GL13.GL_TEXTURE4);
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, terrain.getBlendMap().getTextureID());
+		//GL11.glTexCoord2d(100, 100);
 	}
 
 	private void unbindTexturedModel() {
@@ -84,13 +89,15 @@ public class TerrainRenderer {
 		shader.loadTransformationMatrix(transformationMatrix);
 	}
 	
-	private void prepare(Vector4f clipPlane, List<Light> lights, ICamera camera, Vector3f skyColor, Fog fog, Shadow shadow) {
+	private void prepare(Vector4f clipPlane, List<Light> lights, ICamera camera, Vector3f skyColor, Fog fog, 
+			Shadow shadow, float ambientLightLevel) {
 		shader.loadClipPlane(clipPlane);
 		shader.loadSkyColour(skyColor);
 		shader.loadLights(lights);
 		shader.loadViewMatrix(camera);
 		shader.loadFog(fog.getDensity(), fog.getGradient());
-		shader.loadShadow(shadow.getShadowDistance(), shadow.getTransitionDistance());
+		shader.loadShadow(shadow);
+		shader.loadAmbientLightLevel(ambientLightLevel);
 	}
 	
 	public void cleanUp() {

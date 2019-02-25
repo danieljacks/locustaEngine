@@ -19,9 +19,11 @@ import animation.AnimationLoader;
 import animationRenderer.AnimatedEntity;
 import entities.Camera;
 import entities.Entity;
+import entities.EntityActivity;
 import entities.Fog;
 import entities.Light;
 import entities.Sky;
+import entities.StatusEffect;
 import fontMeshCreator.FontType;
 import fontMeshCreator.GUIText;
 import fontRendering.TextMaster;
@@ -122,6 +124,9 @@ public class MainGameLoop {
 				Vector3f position = new Vector3f(player.getPosition());
 				position.setY(player.getPosition().getY() + 2.2f);
 				particleSystem_smoke.generateParticles(position, scene.getGravity());
+				player.addEffect(StatusEffect.ON_FIRE);
+			}else{
+				player.removeEffect(StatusEffect.ON_FIRE);
 			}
 			particleSystem_fire.generateParticles(new Vector3f(40, 5.5f, -30), scene.getGravity());
 			if(Mouse.isButtonDown(0) && picker.getCurrentTerrainPoint() != null){
@@ -133,7 +138,7 @@ public class MainGameLoop {
 
 			List<Entity> shadowObjects = new ArrayList<>();
 			shadowObjects.addAll(scene.getEntities());
-			//shadowObjects.addAll(scene.getNormalMapEntities());
+			shadowObjects.addAll(scene.getAnimatedEntities());
 			renderer.renderShadowMap(shadowObjects, scene.getLights().get(0));
 			GL11.glEnable(GL30.GL_CLIP_DISTANCE0);
 

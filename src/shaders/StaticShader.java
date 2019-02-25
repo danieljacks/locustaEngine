@@ -35,6 +35,7 @@ public class StaticShader extends ShaderProgram{
 	private int location_useFakeLighting;
 	private int location_fogDensity;
 	private int location_fogGradient;
+	private int location_ambientLightLevel;
 
 	public StaticShader(int maxLights) {
 		super(VERTEX_FILE, FRAGMENT_FILE, maxLights);
@@ -64,9 +65,11 @@ public class StaticShader extends ShaderProgram{
 		location_modelTexture = super.getUniformLocation("modelTexture");
 		location_fogDensity = super.getUniformLocation("fogDensity");
 		location_fogGradient = super.getUniformLocation("fogGradient");
+		location_ambientLightLevel = super.getUniformLocation("ambientLight");
 		location_lightPosition = new int[this.getMaxLights()];
 		location_lightColour = new int[this.getMaxLights()];
 		location_attenuation = new int[this.getMaxLights()];
+		
 		for(int i=0;i<this.getMaxLights();i++){
 			location_lightPosition[i] = super.getUniformLocation("lightPosition[" + i + "]");
 			location_lightColour[i] = super.getUniformLocation("lightColour[" + i + "]");
@@ -142,5 +145,9 @@ public class StaticShader extends ShaderProgram{
 	public void loadFog(float density, float gradient){
 		super.loadFloat(location_fogDensity, density);
 		super.loadFloat(location_fogGradient, gradient);
+	}
+	
+	public void loadAmbientLightLevel(float ambientLightLevel){
+		super.loadFloat(location_ambientLightLevel, ambientLightLevel);
 	}
 }

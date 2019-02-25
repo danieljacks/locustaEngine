@@ -34,9 +34,9 @@ public class NormalMappingRenderer {
 	}
 
 	public void render(Map<TexturedModel, List<Entity>> entities, Vector4f clipPlane, List<Light> lights,
-			ICamera camera, Vector3f skyColor, Fog fog) {
+			ICamera camera, Vector3f skyColor, Fog fog, float ambientLightLevel) {
 		shader.start();
-		prepare(clipPlane, lights, camera, skyColor, fog);
+		prepare(clipPlane, lights, camera, skyColor, fog, ambientLightLevel);
 		for (TexturedModel model : entities.keySet()) {
 			prepareTexturedModel(model);
 			List<Entity> batch = entities.get(model);
@@ -93,13 +93,15 @@ public class NormalMappingRenderer {
 		shader.loadOffset(entity.getTextureXOffset(), entity.getTextureYOffset());
 	}
 
-	private void prepare(Vector4f clipPlane, List<Light> lights, ICamera camera, Vector3f skyColor, Fog fog) {
+	private void prepare(Vector4f clipPlane, List<Light> lights, ICamera camera, Vector3f skyColor, Fog fog, 
+			float ambientLightLevel) {
 		shader.loadClipPlane(clipPlane);
 		shader.loadSkyColour(skyColor);
 		Matrix4f viewMatrix = Maths.createViewMatrix(camera);
 		shader.loadLights(lights, viewMatrix);
 		shader.loadViewMatrix(viewMatrix);
 		shader.loadFog(fog.getDensity(), fog.getGradient());
+		shader.loadAmbientLightLevel(ambientLightLevel);
 	}
 
 }

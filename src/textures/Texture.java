@@ -13,6 +13,8 @@ public class Texture {
 	public final int size;
 	private final int type;
 	private int numberOfRows = 1;
+	private float shineDamper = 1;
+	private float reflectivity = 0;
 
 	protected Texture(int textureId, int size) {
 		this.textureId = textureId;
@@ -45,6 +47,22 @@ public class Texture {
 
 	public void setNumberOfRows(int numberOfRows) {
 		this.numberOfRows = numberOfRows;
+	}
+	
+	public float getShineDamper() {
+		return shineDamper;
+	}
+
+	public void setShineDamper(float shineDamper) {
+		this.shineDamper = shineDamper;
+	}
+
+	public float getReflectivity() {
+		return reflectivity;
+	}
+
+	public void setReflectivity(float reflectivity) {
+		this.reflectivity = reflectivity;
 	}
 
 }

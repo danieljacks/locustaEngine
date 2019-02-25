@@ -46,15 +46,15 @@ public class SceneLoader {
 	public Scene loadForestScene(Loader loader) {
 		Scene scene = new Scene();
 		scene.setGravity(-50f);
+		scene.setWaterLevel(-10);
+		scene.setAmbientLighLevel(0.2f);
 		Shadow shadow = new Shadow();
 		shadow.setShadowDistance(300.0f);
 		shadow.setTransitionDistance(50.0f);
-		shadow.setQuality(4096);
+		shadow.setQuality(8192);
 		scene.setShadow(shadow);
 		RawModel bunnyModel = OBJLoader.loadObjModel("stanfordBunny", loader);
 		RawModel teaModel = OBJLoader.loadObjModel("tea", loader);
-		RawModel ballModel = OBJLoader.loadObjModel("foot", loader);
-		TexturedModel ball = new TexturedModel(ballModel, new ModelTexture(loader.loadTexture("foot")));
 		TexturedModel teapot = new TexturedModel(teaModel, new ModelTexture(loader.loadTexture("tea")));
 		RawModel metaModel = OBJLoader.loadObjModel("meta", loader);
 		TexturedModel meta = new TexturedModel(metaModel, new ModelTexture(loader.loadTexture("meta")));
@@ -64,7 +64,7 @@ public class SceneLoader {
 		TexturedModel stanfordBunny = new TexturedModel(bunnyModel,
 				new ModelTexture(loader.loadTexture("white")));
 		Player player = new Player(AnimatedModelLoader.loadEntity(new MyFile("res", "objects",  "villager", "model.dae"),
-				new MyFile("res", "objects", "villager", "tex_diffuse.png"), new Vector3f(75, 5, -75), new Vector3f(0, 0, 0), 1), 40, 160,
+				new MyFile("res", "objects", "villager", "tex_diffuse_new.png"), new Vector3f(75, 5, -75), new Vector3f(0, 0, 0), 1), 40, 160,
 				scene.getGravity(), 18);
 		// new Player(stanfordBunny, new Vector3f(75, 5, -75), 0, 100, 0, 0.6f,
 		// 40, 160,scene.getGravity(), 18);
@@ -124,7 +124,7 @@ public class SceneLoader {
 
 		// Terrain terrain = new Terrain(0, -1, loader, texturePack, blendMap,
 		// "heightmap", 5000);
-		Terrain terrain = new Terrain(0, -1, loader, texturePack, blendMap, 3000, 256, "boby");
+		Terrain terrain = new Terrain(0, -1, loader, texturePack, blendMap, 4096, 256, "boby");
 		List<Terrain> terrains = new ArrayList<Terrain>();
 		terrains.add(terrain);
 
@@ -154,11 +154,17 @@ public class SceneLoader {
 		boulderModel.getTexture().setNormalMap(loader.loadTexture("boulderNormal"));
 		boulderModel.getTexture().setShineDamper(10);
 		boulderModel.getTexture().setReflectivity(0.5f);
+		
+		TexturedModel ballModel = new TexturedModel(NormalMappedObjLoader.loadOBJ("foot", loader),
+				new ModelTexture(loader.loadTexture("foot")));
+		ballModel.getTexture().setNormalMap(loader.loadTexture("footNormal"));
+		ballModel.getTexture().setShineDamper(10);
+		ballModel.getTexture().setReflectivity(0.5f);
 
 		// **********Water Renderer Set-up************************
 
 		List<WaterTile> waters = new ArrayList<WaterTile>();
-		WaterTile water = new WaterTile(-10, 0, -1, 5000, 32);
+		WaterTile water = new WaterTile(scene.getWaterLevel(), 0, -1, 5000, 32);
 		waters.add(water);
 
 		// ************ENTITIES*******************
@@ -265,7 +271,7 @@ public class SceneLoader {
 			float z = random.nextFloat() * -terrain.getSize();
 			float y = terrain.getHeightOfTerrain(x, z)+2.4f;
 			if (y >= water.getHeight()) {
-				entities.add(new Entity(ball, 1, new Vector3f(x, y, z), 0, random.nextFloat() * 360, 0, 0.5f));
+				entities.add(new Entity(ballModel, 1, new Vector3f(x, y, z), 0, random.nextFloat() * 360, 0, 0.5f));
 			} else {
 				i--;
 			}
@@ -278,7 +284,6 @@ public class SceneLoader {
 		List<Light> lights = new ArrayList<Light>();
 		Light sun = new Light(new Vector3f(100, 100, 20), new Vector3f(1.0f, 1.0f, 1.0f));
 		lights.add(sun);
-		// entities.add(player);
 
 		List<GuiTexture> guiTextures = new ArrayList<GuiTexture>();
 		// GuiTexture shadowMap = new GuiTexture(renderer.getShadowMapTexture(),
@@ -308,11 +313,11 @@ public class SceneLoader {
 				new FlareTexture(flareTextures[3], 0.8f), new FlareTexture(flareTextures[7], 1.2f));
 
 		// ANIMATION TEST
-		AnimatedEntity guy = AnimatedModelLoader.loadEntity(new MyFile("res", "objects", "villager", "model.dae"),
-				new MyFile("res", "objects", "villager", "tex_diffuse.png"), new Vector3f(-75, 0, -75), new Vector3f(0, 0, 0), 20);
+		//AnimatedEntity guy = AnimatedModelLoader.loadEntity(new MyFile("res", "objects", "villager", "model_new.dae"),
+				//new MyFile("res", "objects", "villager", "tex_diffuse.png"), new Vector3f(-75, 0, -75), new Vector3f(0, 0, 0), 20);
 
-		Animation animation = AnimationLoader.loadAnimation(new MyFile("res", "objects", "villager", "animations", "run_forward.dae"));
-		guy.doAnimation(animation);
+		//Animation animation = AnimationLoader.loadAnimation(new MyFile("res", "objects", "villager", "animations", "run_forward_new.dae"));
+		//guy.doAnimation(animation);
 
 		Fog fog = new Fog(0.001f, 6f);
 		Sky sky = new Sky();
@@ -336,7 +341,7 @@ public class SceneLoader {
 		scene.setTerrains(terrains);
 		scene.setWaterTiles(waters);
 		scene.setLights(lights);
-		scene.addAnimatedEntity(guy);
+		//scene.addAnimatedEntity(guy);
 		scene.setFog(fog);
 		scene.setFlare(lensFlare);
 		scene.setGuiTextures(guiTextures);
